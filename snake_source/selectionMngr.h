@@ -20,7 +20,7 @@ class SelectionManager
 			bool difFlag = false; 
 			while(!difFlag && !myGame.QuitGame())
 			{
-				input = myGame.KeyPress(); 
+				input = myGame.KeyPress();
 				if(input == 's')
 				{
 					if(position_temp<7)
@@ -51,6 +51,7 @@ class SelectionManager
 					//Quit game completely. 
 					myGame.SetQuitGame(true);
 				}
+	
 			}
 			return enterFlag;
 		}
@@ -256,6 +257,10 @@ class SelectionManager
 					case'q':
 						myGame.SetQuitGame(true); 
 					break;
+				
+					case 'W':
+						return "WSU";	
+					break; 
 				}	
 
 			}
