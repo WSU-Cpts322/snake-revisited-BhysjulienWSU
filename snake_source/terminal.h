@@ -41,6 +41,8 @@ using namespace std;
 class Terminal
 {
 	private:
+	bool printedRev = false; 
+	int paintSnake = 0; 
 	bool gameover;
 	bool quitgame;	
 	int height;
@@ -402,6 +404,10 @@ class Terminal
 		else
 			gameover = false; 
 	}
+	void SetPaintSnake(int value)
+	{
+		paintSnake = value; 
+	}
 	bool GameOver()
 	{
 		return gameover; 
@@ -472,18 +478,38 @@ class Terminal
 		}
 		else
 		{
-			PrintBox(1,GetWidth(),1,1,GetHeight(),1,1,1,GetCurrentSecondColor(), GetCurrentPrimaryColor()); //myGame.GetCurrentColor()); 
+			PrintBox(1,1,1,1,GetCurrentSecondColor(), GetCurrentPrimaryColor(), true); //myGame.GetCurrentColor()); 
 		}
 	}
-	void PrintBox(int topRightY, int topRightX, int topLeftY, int topLeftX, int bottomLeftY, int bottomLeftX, int wDiv,int hDiv,int colorBoarder, int colorFill)
+	void PrintBox(int topLeftY, int topLeftX, int wDiv, int hDiv, int colorBoarder, int colorFill, bool divide)
 	{
+	
+		int boxWidth;
+		int boxHeight; 
+		int topRightY;
+		int topRightX;
+		int bottomLeftX;
+		int bottomLeftY; 
+
+		if(divide)
+		{
+			boxWidth = width/wDiv;
+			boxHeight = height/hDiv;
+		}
+		else
+		{
+			boxWidth = wDiv;
+			boxHeight = hDiv;
+		}
+		topRightY = topLeftY; 
+		topRightX = topLeftX+boxWidth-1; 
+		bottomLeftX = topLeftX; 
+		bottomLeftY = topLeftY + boxHeight; 
 		//Preserve previous color Settings. TODO: Make ColorSelect take int argument for modularity. 
-		int boxWidth = width/wDiv;
-		int boxHeight = height/hDiv; 
 		SetColor(true, colorBoarder);
 		//Draw Outline of Box 
 		mvhline(topLeftY,topLeftX,'X',boxWidth); 
-		mvvline(topLeftY,topLeftY,'X',boxHeight);
+		mvvline(topLeftY,topLeftX,'X',boxHeight);
 		mvvline(topRightY,topRightX,'X',boxHeight); 
 		mvhline(bottomLeftY,bottomLeftX,'X',boxWidth); 
 		SetColor(false, colorBoarder); 
@@ -497,7 +523,10 @@ class Terminal
 		SetColor(false, colorFill);
 				
 	}
-	
+	string GetDifficultyStr() 
+	{
+		return difficultyString; 
+	}
 	void PrintSnakeHeader()
 	{
 		attron(COLOR_PAIR(8));
@@ -716,10 +745,10 @@ class Terminal
 		mvhline(26-1-12,40+1+34+24,'X',1);//W
 		SetColor(false,BB); 	
 	} 
-	void Clear()
+	void Clear(int rows)
 	{
 		string clear        = "                                       ";
-		for(int i = 0; i<45; i++)
+		for(int i = 0; i<rows; i++)
 		{
 			mvprintw(10+i,54,clear.c_str()); 
 		}
@@ -728,12 +757,12 @@ class Terminal
 	{     
 		if(selection == 1)
 		{
-			Clear(); 
+			Clear(20); 
 			PrintSnake(10); 
 		}
 		if(selection ==2)
 		{
-			Clear(); 
+			Clear(20); 
 			PrintSnake(16); 
 		}
 	}
@@ -741,7 +770,7 @@ class Terminal
 	{
 		if(selection == 1)
 		{
-			Clear();
+			Clear(18);
 			PrintSnake(10);
 			gameSize = "Small";
 			height = SMALLY;
@@ -749,7 +778,7 @@ class Terminal
 		}
 		if(selection == 2)
 		{
-			Clear();
+			Clear(18);
 			PrintSnake(16);
 			gameSize = "Medium";
 			height = MEDIUMY;
@@ -758,7 +787,7 @@ class Terminal
 		}
 		if(selection == 3)
 		{
-			Clear();
+			Clear(18);
 			PrintSnake(22);
 			gameSize ="Large";
 			height = LARGEY;
@@ -770,21 +799,21 @@ class Terminal
 		difficulty = selection; 
 		if(selection == 1)
 		{
-			Clear();
+			Clear(18);
 			PrintSnake(10); 
 			difficulty = EASY;
 			difficultyString = "Easy"; 
 		}	
 		if(selection == 2)
 		{
-			Clear(); 
+			Clear(18); 
 			PrintSnake(16); 
 			difficulty = HARD;
 			difficultyString = "HARD"; 
 		}
 		if(selection ==3)
 		{
-			Clear();
+			Clear(18);
 			PrintSnake(22);
 			difficulty = YR2020;
 			difficultyString = "2020";
@@ -796,7 +825,7 @@ class Terminal
 		if(selection == BW)
 		{
 			colorTypeTwo = WB;
-			Clear(); 
+			Clear(42); 
 			attron(COLOR_PAIR(BW)); 
 			PrintSnake(10);
 			attroff(COLOR_PAIR(BW));
@@ -804,7 +833,7 @@ class Terminal
 		}
 		else if(selection == CB)
 		{
-			Clear(); 
+			Clear(42); 
 			colorTypeTwo = CC; 
 			attron(COLOR_PAIR(CB)); 
 			PrintSnake(16);
@@ -813,7 +842,7 @@ class Terminal
 		}
 		else if(selection ==RW)
 		{
-			Clear(); 
+			Clear(42); 
 			colorTypeTwo =RR;
 			attron(COLOR_PAIR(RW)); 
 			PrintSnake(22);
@@ -822,7 +851,7 @@ class Terminal
 		}
 		else if(selection ==MC)
 		{
-			Clear();
+			Clear(42);
 			colorTypeTwo = MM; 
 			attron(COLOR_PAIR(MC)); 
 			PrintSnake(28);	
@@ -832,7 +861,7 @@ class Terminal
 		else if(selection ==BR)
 		{
 			colorTypeTwo = BBL;
-			Clear();
+			Clear(42);
 			attron(COLOR_PAIR(BR)); 
 			PrintSnake(34);
 			attroff(COLOR_PAIR(BR));
@@ -841,7 +870,7 @@ class Terminal
 		else if(selection ==BG)
 		{
 			colorTypeTwo = BBL; 
-			Clear();
+			Clear(42);
 			attron(COLOR_PAIR(BG)); 
 			PrintSnake(40);	
 			attroff(COLOR_PAIR(BG));
@@ -849,48 +878,176 @@ class Terminal
 		}
 		else if(selection ==GY)
 		{
-			Clear();
+			Clear(42);
 			attron(COLOR_PAIR(GY)); 
 			PrintSnake(46);	
 			attroff(COLOR_PAIR(GY));
 			//SetColor(selection);
 		}
 	}
+	int GetGameSize()
+	{
+		int size = 0; 
+		if(gameSize == "Medium")
+			size = MEDIUMX;
+		else if(gameSize == "Small")
+			size = SMALLX; 
+		else if(gameSize == "Large")
+			size = LARGEX; 
+		else
+			size = LARGEX;
+		return size; 
+	}
+	string GetInitials()
+	{
+		PrintSnakeHeader(); 
+		Revisited(0, 24, 0);
+		PaintSnakeEasy(24,56); 	
+		PrintString(12,2, "Congratulations, you have achived a highscore. Please enter your initials:");
+		int input;
+	       	string initials; 
+		bool enterFlag = false; 
+		int i = 0; 
+		while(!enterFlag)
+		{
+			input = KeyPress();
+			if(i<3)
+			{
+				if(input >= 97 && input <= 122) //Then its uppercase 
+				{
+					char temp = input;
+					temp = toupper(temp);	
+					initials+=temp; 
+					i++;
+				}
+				if(input >= 65 && input <= 90)
+				{
+					char temp = input;
+					temp = input;
+					initials+=temp;
+					i++; 
 
-	void PrintSelection(int selection)
+				}
+			}
+			if(input == 8 || input == 127) 
+			{
+				string temp = initials.substr(0,initials.length()-1);
+				initials = temp; 
+				PrintString(14,2, "             "); 
+				i--; 
+			}
+			if(input == '\n')
+			{
+				if(i == 0)
+				{
+					PrintString(16,2, "Please enter at least one character before continuing"); 
+				}
+				else
+				{
+					enterFlag = true; 
+				}
+			}
+			PrintString(14,2, initials); 
+		
+		}
+		return initials; 
+	}
+	string* StringToInt(int*value, int count)
+	{
+		string *temp = new string[count]; 
+		for(int i = 0; i<count; i++)
+		{
+			temp[i] = to_string(value[i]);
+		}
+		return temp; 
+	}
+	void PrintString(int y, int x, string String)
+	{	
+  		mvprintw(y,x, String.c_str()); 
+	}
+	void PrintSelection(int selection, int clear)
 	{
 		if(selection == 1)
 		{
-			Clear(); 
+			Clear(clear); 
 			PrintSnake(10);
 		}
 		else if(selection == 2)
 		{
-			Clear(); 
+			Clear(clear); 
 			PrintSnake(16);
 		}
 		else if(selection ==3)
 		{
-			Clear(); 
+			Clear(clear); 
 			PrintSnake(22);
 		}
 		else if(selection ==4)
 		{
-			Clear();
+			Clear(clear);
 			PrintSnake(28);	
 		}
 		else if(selection ==5)
 		{
-			Clear();
+			Clear(clear);
 			PrintSnake(34);
 		}
 	}
-	void MainScreen()
+	void PrintHighScores(string *name, int *scores)
+	{
+		string *stgScores = StringToInt(scores, 6);
+		string tempForPrinting[6] = {"Easy: ", "Hard: ", "2020: ", "Easy: ", "Hard: ", "2020: "};
+		PrintString(1, 100, "~High Scores~"); 
+		PrintString(2,88,"Old School"); 
+		PrintString(2,113, "New School"); 
+		for(int j =0; j<6; j++)
+		{
+			string gap(7-stgScores[j].length(), ' ');
+			string temp;
+			if(name[j] != "")
+			{
+				temp = stgScores[j] + gap +" (" +name[j] + ")";
+			}
+			else
+			{
+				temp = ""; 
+			}
+			tempForPrinting[j] += temp; 
+		}
+		PrintString(3,88, tempForPrinting[0]); 
+		PrintString(4,88, tempForPrinting[1]); 
+		PrintString(5,88, tempForPrinting[2]); 
+		PrintString(3,113, tempForPrinting[3]); 
+		PrintString(4,113, tempForPrinting[4]); 
+		PrintString(5,113, tempForPrinting[5]); 
+	
+	}
+	void SecurityAlert()
+	{
+		int i = -1; 
+		while(i ==-1)
+		{
+			i = KeyPress(); 
+			erase(); 
+			PrintSnakeHeader(); 
+			PrintString(13,2, "SECURITY ALERT: Your initials have been evaluated by the highly advance onboard \"Snake AI.\"");
+			PrintString(14,2,  "Basd on your initals it was determined you are a generaly shady individual and not to be trusted."); 
+			PrintString(15,2, "While we understand you didn't cheat on this game, our AI has determined it is only a matter of time before you do.");  
+			PrintString(16,2, "As a result, your score has been deleted. Can't argue with Science!!!");
+			PrintString(19,2, "Sincerely, Mr. Snake"); 
+			PrintString(23,2, "          ----------------------------GOOD BYE-----------------------------------          "); 
+		}	
+		SetQuitGame(true);
+
+	}
+
+	void MainScreen(string *names, int *scores)
 	{
 		PrintSnakeHeader();
 		PrintSnakePlayGame(); 
 		PrintSnakeOptions(); 
 		PrintHighScore(); 
+		PrintHighScores(names, scores);
 		PrintCurrentSettings(); 
 	}
 	void OptionsScreen()
@@ -931,5 +1088,200 @@ class Terminal
 		PrintLarge(); 
 		PrintCurrentSettings(); 
 	}
+	void PrintHighScoreScreen(string *names, int *scores)
+	{
+		erase();
+		PrintSnakeHeader(); 
+		PrintHighScore(); 
+		PrintCurrentSettings(); 
+		UpdateTerminal(); 
+		PrintHighScores(names, scores);
+	}
+	void Revisited(int x, int y, int length)
+	{
+		SetColor(true, RB); 
+		PrintString(y,x,"                                                             XXXXXXXXXX                                            ");
+		PrintString(y+1,x,"XXXXXXXXX     XXXXXXXXXXXX XXX        XX  XXXXXXXXX      XXXXXXXXXXXXXXXXX       XXXXXXXXXXXXX             XXXXXXXX ");
+		PrintString(y+2,x,"XXXXXXXXXXX   XXXXXXXXXXXX XXX        XX  XXXXXXXXXXXXX XXXXXXXXXXXXXXX        XXXXXXXXXXXXXXXXX           XXXXXXXXXX ");
+		PrintString(y+3,x,"XX       XXX  XXX          XXX        XX     XXXX       XXX              XXXX         XXX                  XX       XXX ");
+		PrintString(y+4,x,"XX        XX  XX           XXX        XX      XXX       XX               XXXX         XXX         XXXX     XX        XXX ");
+		PrintString(y+5,x,"XX       XX   XXX          XXX        XX      XXX       XXXXXXXXXX                    XXX       XXXXXXXXX  XX         XXX ");
+		PrintString(y+6,x,"XXXXXXXXXXX   XXXXXXXXXX   XXX        XX      XXX        XXXXXXXXXX                   XXX      XX      XXX XX         XXX ");
+		PrintString(y+7,x,"XXXXXXXX      XXX          XXX       XXX      XXX               XXXX      XX          XXX      XXXXXXXXXX  XX         XXX ");
+		PrintString(y+8,x,"XX   XXX      XX            XXX     XXX       XXX                 XX      XX          XXX      XXX         XX         XXX ");
+		PrintString(y+9,x,"XX     XX     XXX            XXX   XXX       XXXXX              XXX       XX          XXX      XX       XX XX        XXX ");
+		PrintString(y+10,x,"XX      XX    XXXXXXXXXXXX    XXX XXX     XXXXXXXXXXXX       XXXX        XXXXX      XXXXXX      XXX    XX  XXXXXXXXXXX ");
+		PrintString(y+11,x,"XX       XX   XXXXXXXXXXXX      XXX       XXXXXXXXXX      XXXX         XXXXXXXXX   XXXXXXXXX     XXXXXXX   XXXXXXXXX ");
+		SetColor(false, RB); 
+
+	
+	}
+	bool PrintdRev()
+	{
+		return printedRev; 
+	}
+	void PaintSnake(int y, int x)
+	{
+		int del = 1;
+		SetColor(true,GG); 
+		if(paintSnake == 49)
+			PrintString(y+13,x-56,"XXX");
+		if(paintSnake == 48)
+			PrintString(y+13,x-54,"XXX");
+		if(paintSnake == 47)
+			PrintString(y+13,x-52,"XXX");
+		if(paintSnake == 46)
+			PrintString(y+13,x-50,"XXX");
+		if(paintSnake == 45)
+			PrintString(y+13,x-48,"XXX");
+		if(paintSnake == 44)
+			PrintString(y+13,x-46,"XXX");
+		if(paintSnake == 43)
+			PrintString(y+13,x-44,"XXX");
+		if(paintSnake == 42)
+			PrintString(y+13,x-42,"XXX");
+		if(paintSnake == 41)
+			PrintString(y+13,x-40,"XXX");
+		if(paintSnake == 40)
+			PrintString(y+13,x-38,"XXX");
+		if(paintSnake == 39)
+			PrintString(y+13,x-36,"XXX");
+		if(paintSnake == 38)
+			PrintString(y+13,x-34,"XXX");
+		if(paintSnake == 37)
+			PrintString(y+13,x-32,"XXXX");
+		if(paintSnake == 36)
+			PrintString(y+13,x-30,"XXX");
+		if(paintSnake == 35)
+			PrintString(y+13,x-28,"XXX");
+		if(paintSnake == 34)
+			PrintString(y+13,x-26,"XXX");
+		if(paintSnake == 33)
+			PrintString(y+13,x-24,"XXX");
+		if(paintSnake == 32)
+			PrintString(y+13,x-22,"XXX");
+		if(paintSnake == 31)
+			PrintString(y+13,x-20,"XXX");
+		if(paintSnake == 30)
+			PrintString(y+13,x-18,"XXX");
+		if(paintSnake == 29)
+			PrintString(y+13,x-16,"XXX");
+		if(paintSnake == 28)
+			PrintString(y+13,x-14,"XXX");
+		if(paintSnake == 27)
+			PrintString(y+13,x-12,"XXXX");
+		if(paintSnake == 26)
+			PrintString(y+13,x-10,"XXX");
+		if(paintSnake == 25)
+			PrintString(y+13,x-8,"XXX");
+		if(paintSnake == 24)
+			PrintString(y+13,x-6,"XXX");
+		if(paintSnake == 23)
+			PrintString(y+13,x-4,"XXX");
+		if(paintSnake == 22)
+			PrintString(y+12,x-2,"XXXX");
+		if(paintSnake == 21)
+			PrintString(y+12,x-1,"XXXX");
+		if(paintSnake == 20)
+			PrintString(y,x+5,"XXXXXXXXXX");
+		if(paintSnake == 19)
+			PrintString(y+1,x+1,"XXXXXXXXXXXXXXXXX");
+		if(paintSnake == 18)
+			PrintString(y+2,x,"XXXXXXXXXXXXXXX");
+		if(paintSnake == 17)
+			PrintString(y+3,x,"XXX");
+		if(paintSnake == 16)
+			PrintString(y+4,x,"XX");
+		if(paintSnake == 15)
+			PrintString(y+5,x,"XXXXXXXXXX");
+		if(paintSnake == 14)
+			PrintString(y+6,x+1,"XXXXXXXXXX");
+		if(paintSnake == 13)
+			PrintString(y+7,x+8,"XXXX");
+		if(paintSnake == 12)
+			PrintString(y+8,x+10,"XX");
+		if(paintSnake == 11)
+			PrintString(y+9,x+8,"XXX");
+		if(paintSnake == 10)
+			PrintString(y+10,x+5,"XXXX");
+		if(paintSnake == 9)
+			PrintString(y+11,x+2,"XXXX");
+
+		if(paintSnake == 60)
+		{
+			SetColor(true, GY);	
+			PrintString(y,x+14, "@");
+			SetColor(false, GY);
+		}	
+		if(paintSnake == 60+del*1)
+		{
+			SetColor(true, RB);	
+			PrintString(y+1,x+18, "-");
+			SetColor(false, RB);
+		}
+		if(paintSnake == 60+ del*2)
+		{
+			SetColor(true, RB);	
+			PrintString(y+1,x+18+1, "-");
+			SetColor(false, RB);
+		}
+		if(paintSnake == 60 +del*3)
+		{
+			SetColor(true, RB);	
+			PrintString(y+1,x+18+2, "-");
+			SetColor(false, RB);
+		}
+		if(paintSnake == 60 +del*4)
+		{
+			SetColor(true, RB);	
+			PrintString(y+1,x+18+2, "<");
+			SetColor(false, RB);
+		}
+		SetColor(false,GG);
+	        paintSnake ++; 
+       		if(paintSnake == 100)
+		{
+			paintSnake = 0; 
+			printedRev = true; 
+		}		
+	}
+	void PaintSnakeEasy(int y, int x)
+	{
+		SetColor(true,GG); 
+		PrintString(y+13,x-56,"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+		PrintString(y+12,x-2,"XXXX");
+		PrintString(y+12,x-1,"XXXX");
+		PrintString(y,x+5,"XXXXXXXXXX");
+		PrintString(y+1,x+1,"XXXXXXXXXXXXXXXXX");
+		PrintString(y+2,x,"XXXXXXXXXXXXXXX");
+		PrintString(y+3,x,"XXX");
+		PrintString(y+4,x,"XX");
+		PrintString(y+5,x,"XXXXXXXXXX");
+		PrintString(y+6,x+1,"XXXXXXXXXX");
+		PrintString(y+7,x+8,"XXXX");
+		PrintString(y+8,x+10,"XX");
+		PrintString(y+9,x+8,"XXX");
+		PrintString(y+10,x+5,"XXXX");
+		PrintString(y+11,x+2,"XXXX");
+		SetColor(false,GG); 
+
+		SetColor(true, GY);	
+		PrintString(y,x+14, "@");
+		SetColor(false, GY);
+		SetColor(true, RB);	
+		PrintString(y+1,x+18, "-");
+		SetColor(false, RB);
+		SetColor(true, RB);	
+		PrintString(y+1,x+18+1, "-");
+		SetColor(false, RB);
+		SetColor(true, RB);	
+		PrintString(y+1,x+18+2, "-");
+		SetColor(false, RB);
+		SetColor(true, RB);	
+		PrintString(y+1,x+18+2, "<");
+		SetColor(false, RB);
+	}		
+
 };
-#endif
+#endif 
+

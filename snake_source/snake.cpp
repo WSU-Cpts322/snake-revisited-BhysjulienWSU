@@ -38,6 +38,14 @@ void Snake::Head_Pos_Chng()
 		break;
 	}
 }
+void Snake::SetPower(bool set)
+{
+	power = set; 
+}
+bool Snake::GetPower()
+{
+	return power; 
+}
 void Snake::SetHeadBool(bool set)
 {
 	SnakeHead_bool = set; 
@@ -83,6 +91,7 @@ Snake::Snake(int width, int height)
 	Snake_x = width/2;
 	Snake_y = height/2;
 	Snake_Length = 0;
+	power = false; 
 }
 Snake::Snake(int width, int height, int length)
 {
@@ -150,7 +159,7 @@ void Snake::incLength()
 {
 	Snake_Length++;
 }
-int Snake::decLength()
+void Snake::decLength()
 {
 	Snake_Length--;
 }

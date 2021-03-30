@@ -16,6 +16,16 @@ int Fruit::getFruitX()
 {
 	return fruitX;
 }
+
+bool Fruit::GetPower()
+{
+	return power; 
+}
+void Fruit::SetPower(bool _power)
+{
+	power = _power; 
+}
+
 void Fruit::setFruit(int y, int x)
 {
 	bool flag = true; 
@@ -39,10 +49,22 @@ void Fruit::setFruit(int y, int x)
 			flag = false; 
 		}
 	}
+	DeterminePower(); 
 }
 void Fruit::newFruit(int y,int x)
 {
 	setFruit(y,x); 
 }
-
+void Fruit::DeterminePower()
+{
+	int i = (rand() % 10);
+	if(i == 10 || i ==5 || i == 0)
+	{
+		power = true; 
+	}
+	else 
+	{
+		power = false; 
+	}
+}
 
