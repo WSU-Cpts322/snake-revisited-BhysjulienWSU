@@ -24,15 +24,9 @@ int main()
 	{
 		printw("|                |\n");
 	}
-	if (c == 'w' || c == 's' || c == 'a' || c == 'd')
-	{
 		printw("|      %c         |\n", c);
 		delay = 200;
-	}
-	else
-	{
 		printw("|                |\n");
-	}
 	for(int j = 0; j < 10; j++)
 	{
 		printw("|                |\n");

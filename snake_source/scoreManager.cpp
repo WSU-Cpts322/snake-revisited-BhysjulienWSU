@@ -238,7 +238,7 @@ bool ScoreKeeper::HighScoreCheck(int score, int newSchool, string gameDif) //ret
 			if(beatScore)
 				currentGame = OE; 
 		}
-		else if(gameDif == "HARD")
+		else if(gameDif == "Hard")
 		{
 			beatScore = CheckScore(oldSchoolHard, score); 
 			if(beatScore)
@@ -259,7 +259,7 @@ bool ScoreKeeper::HighScoreCheck(int score, int newSchool, string gameDif) //ret
 			if(beatScore)
 				currentGame = NE;
 		}
-		else if(gameDif == "HARD")
+		else if(gameDif == "Hard")
 		{
 			beatScore = CheckScore(newSchoolHard, score); 
 			if(beatScore)

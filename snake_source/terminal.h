@@ -4,27 +4,28 @@
 #include<map>
 #include<string>
 #include<iostream>
+#include"letters.h"
 
-#define BW 1
-#define CB 2
-#define RW 3
-#define MC 4
-#define BR 5
-#define BG 6
-#define GY 7
-#define RB 8
-#define RR 9
-#define GG 10
-#define BB 11
-#define BBL 12
-#define MM 13
-#define RR1 14
-#define CC 15
-#define WW 16
-#define GY22 17
-#define WB 18
-#define WR 19
-#define BR2 20
+//#define BW 1
+//#define CB 2
+//#define RW 3
+//#define MC 4
+//#define BR 5
+//#define BG 6
+//#define GY 7
+//#define RB 8
+//#define RR 9
+//#define GG 10
+//#define BB 11
+//#define BBL 12
+//#define MM 13
+//#define RR1 14
+//#define CC 15
+//#define WW 16
+//#define GY22 17
+//#define WB 18
+//#define WR 19
+//#define BR2 20
 #define EASY 120
 #define HARD 80
 #define YR2020 40
@@ -38,7 +39,7 @@
 #define NEW_SCHOOL 2
 
 using namespace std; 
-class Terminal
+class Terminal: public Letters 
 {
 	private:
 	bool printedRev = false; 
@@ -49,220 +50,52 @@ class Terminal
 	int width; 
 	int difficulty = 1;
 	string gameSize = "Medium"; 
-	int gameType = 1;	
-	int colorTypeOne = 1; 
-	int colorTypeTwo = 18;
+	int gameType = 1;
+//	int colorTypeOne = RR; 
+	int colorTypeOne = RR; 
+	int colorTypeTwo = GB;
 	string difficultyString; 
 	string gameTypeString; 
 	//map<string,int> m_colors;
 
 	public:
-	Terminal(int Height, int Width)
+	Terminal()
 	{
 		SetupTerminal(); 
-		height = MEDIUMY;
-		width = MEDIUMX;
-	       	gameSize = "Medium";
-		difficultyString = "Easy"; 
-		difficulty = EASY; 
-		gameType = 1;
-		gameTypeString = "Old School";
-	}
-	Terminal(int Height, int Width, string special) 
-	{
-		SetupTerminal(); 
-		height = Height; 
-		width = Width; 
-		gameSize = special;
-		difficultyString = "Special";
-		difficulty = HARD; 
-		gameType = 2; 
-		gameTypeString = special + " School";
-		colorTypeOne = BR2;
-		colorTypeTwo = RR; 
 	}
 	~Terminal()
 	{
 		TeardownTerminal();
 	}
-	//Move this to score tracker 
-	int ScoreMultiplier()
+	//Function for printing game settings. 
+	void PrintCurrentSettings(string gameS, string gameTypeString, string difficultyString, int mult, int x, int y)
 	{
-	   	int gameMultiplier = 1; 
-		if(difficulty == EASY)
-		{
-			gameMultiplier = 10; 
-		}
-		else if (difficulty == HARD)
-		{
-			gameMultiplier = 15;
-		}
-		else if(difficulty == YR2020)
-		{
-			gameMultiplier = 20;
-		}
-		if(gameSize == "Small")
-		{
-			gameMultiplier = gameMultiplier * 5;
-		}
-		else if(gameSize == "Medium")
-		{
-			gameMultiplier = gameMultiplier * 2;
-		}
-		else if(gameSize =="Large")
-		{
-			gameMultiplier = gameMultiplier * 1;	
-		}
-		if(gameType == 2)
-		{
-			gameMultiplier = gameMultiplier * 2;	
-		}
-		return gameMultiplier; 
-	}
-	void PrintCurrentSettings()
-	{
+		gameSize = gameS; 
 		string Color 		= "Color:       " + to_string(colorTypeOne); 
 		string gameSizeTemp     = "Game Size:   " + gameSize; 
 		string gameTyTemp	= "Game Type:   " + gameTypeString;
 		string difTemp		= "Difficulty:  " + difficultyString; 
-		string scoreMulti	= "Score Multi: " + to_string(ScoreMultiplier()); 
-		mvprintw(1, 60, Color.c_str());
-		mvprintw(2, 60, gameSizeTemp.c_str());
-		mvprintw(3, 60, gameTyTemp.c_str());
-		mvprintw(4, 60, difTemp.c_str());
-		mvprintw(5, 60, scoreMulti.c_str()); 
-
+		string scoreMulti	= "Score Multi: " + to_string(mult); 
+		PrintString(y, x, Color); 
+		PrintString(y+1, x, gameSizeTemp); 
+		PrintString(y+2, x, gameTyTemp);
+		PrintString(y+3, x, difTemp); 
+		PrintString(y+4, x, scoreMulti); 
+		//mvprintw(1, 60, Color.c_str());
+		//mvprintw(2, 60, gameSizeTemp.c_str());
+		//v
+		//v
+		//mvprintw(3, 60, gameTyTemp.c_str());
+		//mvprintw(4, 60, difTemp.c_str());
+		//mvprintw(5, 60, scoreMulti.c_str()); 
+		move(0,0); 
 	}
 	//This one needs to move to slection menus. 
-	void SetGameType(int _gameType)
-	{
-		gameType = _gameType; 
-		if(gameType == OLD_SCHOOL)
-			gameTypeString = "Old School";
-		else if(gameType == NEW_SCHOOL)
-			gameTypeString = "New School";
-	}
-	int GetCurrentPrimaryColor()
-	{
-		return colorTypeOne;
-	}
-	int GetCurrentSecondColor()
-	{
-		return colorTypeTwo;
-	}
-	void ChangeColor(int colorChangeOne, int colorChangeTwo)
-	{
-		colorTypeOne = colorChangeOne; 
-		colorTypeTwo = colorChangeTwo;
-	}	
 	void SetColor(bool color, int colorNum)
 	{
 		switch(colorNum)
 		{
-			case 1:
-				if(color ==true)
-				{
-					attron(COLOR_PAIR(BW));
-				}
-				else
-				{
-					attroff(COLOR_PAIR(BW));
-
-				}
-				break;
-			case 2:
-				if(color ==true)
-				{
-					attron(COLOR_PAIR(CB));
-				}
-				else
-				{
-					attroff(COLOR_PAIR(CB));
-				}
-				break;
-			case 3:
-				if(color ==true)
-				{
-					attron(COLOR_PAIR(RW));
-				}
-				else
-				{
-					attroff(COLOR_PAIR(RW));
-
-				}
-				break;
-			case 4:
-				if(color ==true)
-				{
-					attron(COLOR_PAIR(MC));
-				}
-				else
-				{
-					attroff(COLOR_PAIR(MC));
-				}
-				break;
-			case 5:
-				if(color ==true)
-				{
-					attron(COLOR_PAIR(BR));
-				}
-				else
-				{
-					attroff(COLOR_PAIR(BR));
-
-				}
-				break;
-			case 6:
-				if(color ==true)
-				{
-					attron(COLOR_PAIR(BG));
-				}
-				else
-				{
-					attroff(COLOR_PAIR(BG));
-				}
-				break;
-			case 7:
-				if(color ==true)
-				{
-					attron(COLOR_PAIR(GY));
-				}
-				else
-				{
-					attroff(COLOR_PAIR(GY));
-				}
-				break;
-			case 8:
-				if(color ==true)
-				{
-					attron(COLOR_PAIR(RB));
-				}
-				else
-				{
-					attroff(COLOR_PAIR(RB));
-				}
-				break;
-			case 9:
-				if(color ==true)
-				{
-					attron(COLOR_PAIR(RR));
-				}
-				else
-				{
-					attroff(COLOR_PAIR(RR));
-				}
-				break;
-			case 10:
-				if(color ==true)
-				{
-					attron(COLOR_PAIR(GG));
-				}
-				else
-				{
-					attroff(COLOR_PAIR(GG));
-				}
-				break;
-			case 11:
+			case BB:
 				if(color ==true)
 				{
 					attron(COLOR_PAIR(BB));
@@ -272,7 +105,38 @@ class Terminal
 					attroff(COLOR_PAIR(BB));
 				}
 				break;
-			case 12:
+			case BR:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(BR));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(BR));
+				}
+				break;
+			case BG:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(BG));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(BG));
+
+				}
+				break;
+			case BY:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(BY));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(BY));
+				}
+				break;
+			case BBL:
 				if(color ==true)
 				{
 					attron(COLOR_PAIR(BBL));
@@ -280,19 +144,50 @@ class Terminal
 				else
 				{
 					attroff(COLOR_PAIR(BBL));
+
 				}
 				break;
-			case 13:
+			case BM:
 				if(color ==true)
 				{
-					attron(COLOR_PAIR(MM));
+					attron(COLOR_PAIR(BM));
 				}
 				else
 				{
-					attroff(COLOR_PAIR(MM));
+					attroff(COLOR_PAIR(BM));
 				}
 				break;
-			case 14:
+			case BC:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(BC));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(BC));
+				}
+				break;
+			case BW:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(BW));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(BW));
+				}
+				break;
+			case RB:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(RB));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(RB));
+				}
+				break;
+			case RR:
 				if(color ==true)
 				{
 					attron(COLOR_PAIR(RR));
@@ -302,7 +197,449 @@ class Terminal
 					attroff(COLOR_PAIR(RR));
 				}
 				break;
-			case 15:
+			case RG:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(RG));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(RG));
+				}
+				break;
+			case RY:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(RY));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(RY));
+				}
+				break;
+			case RBL:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(RBL));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(RBL));
+				}
+				break;
+			case RM:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(RM));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(RM));
+				}
+				break;
+			case RC:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(RC));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(RC));
+				}
+				break;
+			case RW:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(RW));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(RW));
+				}
+				break;
+			case GB:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(GB));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(GB));
+				}
+				break;
+			case GR:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(GR));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(GR));
+				}
+				break;
+			case GG:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(GG));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(GG));
+				}
+				break; 
+			case GY:
+				if(color == true)
+				{
+					attron(COLOR_PAIR(GY));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(GY)); 
+				}
+				break;
+			case GBL:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(GBL));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(GBL));
+				}
+				break;
+			case GM:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(GM));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(GM));
+				}
+				break;
+			case GC:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(GC));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(GC));
+				}
+				break;
+			case GW:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(GW));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(GW));
+				}
+				break;
+			case YB:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(YB));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(YB));
+				}
+				break;
+			case YR:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(YR));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(YR));
+				}
+				break;
+			case YG:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(YG));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(YG));
+				}
+				break;
+			case YY:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(YY));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(YY));
+				}
+				break;
+			case YBL:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(YBL));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(YBL));
+				}
+				break;
+			case YM:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(YM));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(YM));
+				}
+				break;
+			case YC:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(YC));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(YC));
+				}
+				break;
+			case YW:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(YW));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(YW));
+				}
+				break;
+			case BLB:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(BLB));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(BLB));
+				}
+				break;
+			case BLR:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(BLR));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(BLR));
+				}
+				break;
+			case BLG:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(BLG));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(BLG));
+				}
+				break;
+			case BLY:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(BLY));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(BLY));
+				}
+				break;
+			case BLBL:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(BLBL));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(BLBL));
+				}
+				break;
+			case BLM:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(BLM));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(BLM));
+				}
+				break;
+			case BLC:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(BLC));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(BLC));
+				}
+				break;
+			case BLW:
+				if(color == true)
+				{
+					attron(COLOR_PAIR(BLW));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(BLW)); 
+				}
+				break; 
+			case MB:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(MB));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(MB));
+				}
+				break;
+			case MR:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(MR));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(MR));
+				}
+				break;
+			case MG:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(MG));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(MG));
+
+				}
+				break;
+			case MY:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(MY));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(MY));
+				}
+				break;
+			case MBL:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(MBL));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(MBL));
+
+				}
+				break;
+			case MM:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(MM));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(MM));
+				}
+				break;
+			case MC:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(MC));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(MC));
+				}
+				break;
+			case MW:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(MW));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(MW));
+				}
+				break;
+			case CB:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(CB));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(CB));
+				}
+				break;
+			case CR:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(CR));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(CR));
+				}
+				break;
+			case CG:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(CG));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(CG));
+				}
+				break;
+			case CY:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(CY));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(CY));
+				}
+				break;
+			case CBL:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(CBL));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(CBL));
+				}
+				break;
+			case CM:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(CM));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(CM));
+				}
+				break;
+			case CC:
 				if(color ==true)
 				{
 					attron(COLOR_PAIR(CC));
@@ -312,27 +649,17 @@ class Terminal
 					attroff(COLOR_PAIR(CC));
 				}
 				break;
-			case 16:
+			case CW:
 				if(color ==true)
 				{
-					attron(COLOR_PAIR(WW));
+					attron(COLOR_PAIR(CW));
 				}
 				else
 				{
-					attroff(COLOR_PAIR(WW));
+					attroff(COLOR_PAIR(CW));
 				}
 				break;
-			case 17:
-				if(color ==true)
-				{
-					attron(COLOR_PAIR(GY));
-				}
-				else
-				{
-					attroff(COLOR_PAIR(GY));
-				}
-				break;
-			case 18:
+			case WB:
 				if(color ==true)
 				{
 					attron(COLOR_PAIR(WB));
@@ -342,7 +669,7 @@ class Terminal
 					attroff(COLOR_PAIR(WB));
 				}
 				break;
-			case 19:
+			case WR:
 				if(color ==true)
 				{
 					attron(COLOR_PAIR(WR));
@@ -351,72 +678,76 @@ class Terminal
 				{
 					attroff(COLOR_PAIR(WR));
 				}
-			case 20:
-				if(color == true)
+				break;
+			case WG:
+				if(color ==true)
 				{
-					attron(COLOR_PAIR(BR2));
+					attron(COLOR_PAIR(WG));
 				}
 				else
 				{
-					attroff(COLOR_PAIR(BR2)); 
+					attroff(COLOR_PAIR(WG));
 				}
 				break;
+			case WY:
+				if(color == true)
+				{
+					attron(COLOR_PAIR(WY));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(WY)); 
+				}
+				break; 
+			case WBL:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(WBL));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(WBL));
+				}
+				break;
+			case WM:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(WM));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(WM));
+				}
+				break;
+			case WC:
+				if(color ==true)
+				{
+					attron(COLOR_PAIR(WC));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(WC));
+				}
+				break;
+			case WW:
+				if(color == true)
+				{
+					attron(COLOR_PAIR(WW));
+				}
+				else
+				{
+					attroff(COLOR_PAIR(WW)); 
+				}
+				break; 
 			default:
 				break; 
 
 		}
 	}
-	int GetGameType()
-	{
-		return gameType;
-	}
-	int GetDifficulty()
-	{
-		return difficulty; 
-	}
-	int GetHeight()
-	{
-		return height;
-	}
-	int GetWidth()
-	{
-		return width;
-	}
-	void SetHeight(int _height)
-	{
-		height = _height;
-	}
-	void SetWidth(int _width)
-	{
-		width = _width; 
-	}
-	void SetQuitGame(bool check)
-	{
-		if(check == true)
-			quitgame = true; 
-		else
-			quitgame = false; 
-	}
-	void SetGameOver(bool check)
-	{
-		if(check == true)
-			gameover = true;
-		else
-			gameover = false; 
-	}
 	void SetPaintSnake(int value)
 	{
 		paintSnake = value; 
 	}
-	bool GameOver()
-	{
-		return gameover; 
-	}
-	bool QuitGame()
-	{
-		return quitgame; 
-	}
-	
 	//Setup Object 
 	void SetupTerminal()
 	{
@@ -425,33 +756,171 @@ class Terminal
 		nodelay(stdscr,TRUE);
 		cbreak();
 		noecho(); 
-		gameover = false;  
-		quitgame = false; 
-	//	ChangeColor(); 
+	        //ChangeColor(); 
 		curs_set(0);
 		start_color(); 
-		//First is forground second is background 
-		init_pair(1, COLOR_BLACK, COLOR_WHITE); 	
-		init_pair(2, COLOR_CYAN, COLOR_BLUE); 
-		init_pair(3, COLOR_RED, COLOR_WHITE); 
-		init_pair(4, COLOR_MAGENTA, COLOR_CYAN); 
-		init_pair(5, COLOR_BLUE, COLOR_RED);
-		init_pair(6, COLOR_BLACK, COLOR_GREEN); 
-		init_pair(7, COLOR_GREEN, COLOR_YELLOW); 
-		init_pair(8, COLOR_RED, COLOR_BLACK); 
-		init_pair(9, COLOR_RED, COLOR_RED); 
-	     	init_pair(10, COLOR_GREEN, COLOR_GREEN);
-		init_pair(11, COLOR_BLACK, COLOR_BLACK);
-		init_pair(12, COLOR_BLUE, COLOR_BLUE);
-		init_pair(13, COLOR_MAGENTA, COLOR_MAGENTA); 
-		init_pair(14, COLOR_RED, COLOR_RED); 
-		init_pair(15, COLOR_CYAN, COLOR_CYAN);	
-		init_pair(16, COLOR_WHITE, COLOR_WHITE);
-		init_pair(17, COLOR_WHITE, COLOR_BLACK);
-	        init_pair(18, COLOR_WHITE, COLOR_BLACK);
-		init_pair(19, COLOR_WHITE, COLOR_RED);
-		init_pair(20, COLOR_BLACK, COLOR_RED);
+		//First is forground second is background
+		int counter = 1; 
+		for(int fg =0; fg<8; fg++)
+		{
+			for(int bg =0; bg<8; bg++)
+			{
+				init_pair(counter, fg, bg); 
+				counter++;
+			}
+		}
 	}
+ 	int SetCustomColor(string color, bool primary, bool assign)
+	{
+		int temp; 
+		if(color == "BB")	
+			temp = 1;
+		else if(color == "BR")	
+			temp = 2;
+		else if(color == "BG")	
+			temp = 3;
+		else if(color == "BY")	
+			temp = 4;
+		else if(color == "BBL")	
+			temp = 5;
+		else if(color == "BM")	
+			temp = 6;
+		else if(color == "BC")	
+			temp = 7;
+		else if(color == "BW")	
+			temp = 8;
+		else if(color == "RB")	
+			temp = 9;
+		else if(color == "RR")	
+			temp = 10;
+		else if(color == "RG")	
+			temp = 11;
+		else if(color == "RY")	
+			temp = 12;
+		else if(color == "RBL")	
+			temp = 13;
+		else if(color == "RM")	
+			temp = 14;
+		else if(color == "RC")	
+			temp = 15;
+		else if(color == "RW")	
+			temp = 16;
+		else if(color == "GB")	
+			temp = 17;
+		else if(color == "GR")	
+			temp = 18;
+		else if(color == "GG")	
+			temp = 19;
+		else if(color == "GY")	
+			temp = 20;
+		else if(color == "GBL")	
+			temp = 21;
+		else if(color == "GM")	
+			temp = 22;
+		else if(color == "GC")	
+			temp = 23;
+		else if(color == "GW")	
+			temp = 24;
+		else if(color == "YB")	
+			temp = 25;
+		else if(color == "YR")	
+			temp = 26;
+		else if(color == "YG")	
+			temp = 27;
+		else if(color == "YY")	
+			temp = 28;
+		else if(color == "YBL")	
+			temp = 29;
+		else if(color == "YM")	
+			temp = 30;
+		else if(color == "YC")	
+			temp = 31;
+		else if(color == "YW")	
+			temp = 32;
+		else if(color == "BLB")	
+			temp = 33;
+		else if(color == "BLR")	
+			temp = 34;
+		else if(color == "BLG")	
+			temp = 35;
+		else if(color == "BLY")	
+			temp = 36;
+		else if(color == "BLBL")	
+			temp = 37;
+		else if(color == "BLM")	
+			temp = 38;
+		else if(color == "BLC")	
+			temp = 39;
+		else if(color == "BLW")	
+			temp = 40;
+		else if(color == "MB")	
+			temp = 41;
+		else if(color == "MR")	
+			temp = 42;
+		else if(color == "MG")	
+			temp = 43;
+		else if(color == "MY")	
+			temp = 44;
+		else if(color == "MBL")	
+			temp = 45;
+		else if(color == "MM")	
+			temp = 46;
+		else if(color == "MC")	
+			temp = 47;
+		else if(color == "MW")	
+			temp = 48;
+		else if(color == "CB")	
+			temp = 49;
+		else if(color == "CR")	
+			temp = 50;
+		else if(color == "CG")	
+			temp = 51;
+		else if(color == "CY")	
+			temp = 52;
+		else if(color == "CBL")	
+			temp = 53;
+		else if(color == "CM")	
+			temp = 54;
+		else if(color == "CC")	
+			temp = 55;
+		else if(color == "CW")	
+			temp = 56;
+		else if(color == "WB")	
+			temp = 57;
+		else if(color == "WR")	
+			temp = 58;
+		else if(color == "WG")	
+			temp = 59;
+		else if(color == "WY")	
+			temp = 60;
+		else if(color == "WBL")	
+			temp = 61;
+		else if(color == "WM")	
+			temp = 62;
+		else if(color == "WC")	
+			temp = 63;
+		else if(color == "WW")	
+			temp = 64;
+		else 
+		{
+			if(primary)
+			{
+				temp = BC; 
+			}
+			else 
+			{
+				temp = WC;
+			}
+		}
+		if(assign)
+		{
+			if(primary)
+				colorTypeOne = temp; 
+			else 
+				colorTypeTwo = temp; 
+		}
+		return temp; 
+	}	
 	int KeyPress()
 	{
 		return getch(); 
@@ -469,7 +938,20 @@ class Terminal
 	{
 		refresh(); 
 	}
-	void PrintBoard()
+	int GetCurrentPrimaryColor()
+	{
+		return colorTypeOne;
+	}
+	int GetCurrentSecondColor()
+	{
+		return colorTypeTwo;
+	}
+	void ChangeColor(int colorChangeOne, int colorChangeTwo)
+	{
+		colorTypeOne = colorChangeOne; 
+		colorTypeTwo = colorChangeTwo;
+	}	
+	void PrintBoard(string gameTypeString, int width, int height)
 	{
 		if(gameTypeString == "WSU School")
 		{
@@ -478,10 +960,10 @@ class Terminal
 		}
 		else
 		{
-			PrintBox(1,1,1,1,GetCurrentSecondColor(), GetCurrentPrimaryColor(), true); //myGame.GetCurrentColor()); 
+			PrintBox(1,1,1,1,width, height, GetCurrentSecondColor(), GetCurrentPrimaryColor(), true, true); //myGame.GetCurrentColor()); 
 		}
 	}
-	void PrintBox(int topLeftY, int topLeftX, int wDiv, int hDiv, int colorBoarder, int colorFill, bool divide)
+	void PrintBox(int topLeftY, int topLeftX, int wDiv, int hDiv, int width, int height, int colorBoarder, int colorFill, bool divide, bool fill)
 	{
 	
 		int boxWidth;
@@ -513,25 +995,23 @@ class Terminal
 		mvvline(topRightY,topRightX,'X',boxHeight); 
 		mvhline(bottomLeftY,bottomLeftX,'X',boxWidth); 
 		SetColor(false, colorBoarder); 
-		
-		SetColor(true, colorFill);
-		//Drop interior of box. 
-		for(int topTemp =topLeftY+1; bottomLeftY-1>=topTemp; topTemp++)
+		if(fill == true)
 		{
-			mvhline(topTemp,topLeftX+1, ' ',boxWidth-2); 
+			SetColor(true, colorFill);
+			//Drop interior of box. 
+			for(int topTemp =topLeftY+1; bottomLeftY-1>=topTemp; topTemp++)
+			{
+				mvhline(topTemp,topLeftX+1, ' ',boxWidth-2); 
+			}
+			SetColor(false, colorFill);
 		}
-		SetColor(false, colorFill);
 				
-	}
-	string GetDifficultyStr() 
-	{
-		return difficultyString; 
 	}
 	void PrintSnakeHeader()
 	{
-		attron(COLOR_PAIR(8));
-		printw("  XXXX   XX     XX    XXX    XX  XX  XXXXXX  XX\nXX   XX  XXX    XX   XX XX   XX XX   XX      XX\nXX       XX X   XX  XX   XX  XXX     XX      XX \n   XX    XX  X  XX  XX   XX  XXX     XXXXXX  XX\n     XX  XX   X XX  XX   XX  XX XX   XX      XX\nXX   XX  XX    XXX  XX   XX  XX  XX  XX   \n  XXX    XX     XX  XX   XX  XX   XX XXXXXX  XX __\n===============================================|__*|--- \n\n\n");
-		attroff(COLOR_PAIR(8));	
+		attron(COLOR_PAIR(RB));
+		printw("\n\n     XXXX   XX     XX    XXX    XX  XX  XXXXXX  XX\n   XX   XX  XXX    XX   XX XX   XX XX   XX      XX\n   XX       XX X   XX  XX   XX  XXX     XX      XX \n      XX    XX  X  XX  XX   XX  XXX     XXXXXX  XX\n        XX  XX   X XX  XX   XX  XX XX   XX      XX\n   XX   XX  XX    XXX  XX   XX  XX  XX  XX     \n     XXX    XX     XX  XX   XX  XX   XX XXXXXX  XX __\n   ===============================================|__*|--- \n\n\n");
+		attroff(COLOR_PAIR(RB));	
 	}
 	void PrintSnakeOptions()
 	{
@@ -620,7 +1100,7 @@ class Terminal
 	}
 	void PrintSnake(int y)
 	{
-	
+		int j = 65; 
 		string layer1       = "    ____                        "; 
 		string layer2       = "   /. . \\                       ";
 		string layer3	    = ">-----  /                       ";
@@ -628,12 +1108,12 @@ class Terminal
 		string layer5       = "    \\  \\_____________/  \\___/ / ";
 		string layer6       = "     \\________________/\\_____/  ";
 
-		mvprintw(y,58, layer1.c_str()); 
-		mvprintw(y+1,58, layer2.c_str());
-		mvprintw(y+2,58, layer3.c_str());
-		mvprintw(y+3,58, layer4.c_str());
-		mvprintw(y+4,58, layer5.c_str());
-		mvprintw(y+5,58, layer6.c_str());
+		mvprintw(y,j, layer1.c_str()); 
+		mvprintw(y+1,j, layer2.c_str());
+		mvprintw(y+2,j, layer3.c_str());
+		mvprintw(y+3,j, layer4.c_str());
+		mvprintw(y+4,j, layer5.c_str());
+		mvprintw(y+5,j, layer6.c_str());
 	}
 	void PrintWSUGameBoard()
 	{
@@ -750,155 +1230,156 @@ class Terminal
 		string clear        = "                                       ";
 		for(int i = 0; i<rows; i++)
 		{
-			mvprintw(10+i,54,clear.c_str()); 
+			mvprintw(10+i,65,clear.c_str()); 
 		}
 	}
 	void PrintOptions(int selection)
 	{     
 		if(selection == 1)
 		{
+			SetColor(true, GB);	
 			Clear(20); 
 			PrintSnake(10); 
+			SetColor(false, GB);	
 		}
 		if(selection ==2)
 		{
+			SetColor(true, GB);	
 			Clear(20); 
 			PrintSnake(16); 
+			SetColor(false, GB);	
 		}
 	}
-	void PrintSizeSelection(int selection)
+	//Function that prints game size based on index and returns a string based on that selection. 
+	string PrintSizeSelection(int selection)
 	{
+		string gameSize = "Large";
 		if(selection == 1)
 		{
+			SetColor(true, GB);	
 			Clear(18);
 			PrintSnake(10);
 			gameSize = "Small";
 			height = SMALLY;
 			width = SMALLX; 
+			SetColor(false, GB);	
 		}
 		if(selection == 2)
 		{
+			SetColor(true, GB);	
 			Clear(18);
 			PrintSnake(16);
 			gameSize = "Medium";
 			height = MEDIUMY;
 			width = MEDIUMX;
+			SetColor(false, GB);	
 
 		}
 		if(selection == 3)
 		{
+			SetColor(true, GB);	
 			Clear(18);
 			PrintSnake(22);
 			gameSize ="Large";
 			height = LARGEY;
 			width = LARGEX; 
+			SetColor(false, GB);	
 		}
+		return gameSize; 
 	}	
-	void PrintDifficultySelection(int selection)
+	string PrintDifficultySelection(int selection)
 	{
+		string dif; 
 		difficulty = selection; 
 		if(selection == 1)
 		{
+			SetColor(true, GB);	
+			dif = "Easy";
 			Clear(18);
 			PrintSnake(10); 
-			difficulty = EASY;
-			difficultyString = "Easy"; 
+			SetColor(false, GB);	
 		}	
 		if(selection == 2)
 		{
+			SetColor(true, GB);	
+			dif = "Hard";
 			Clear(18); 
 			PrintSnake(16); 
-			difficulty = HARD;
-			difficultyString = "HARD"; 
+			SetColor(false, GB);	
 		}
 		if(selection ==3)
 		{
+			SetColor(true, GB);	
+			dif = "2020"; 
 			Clear(18);
 			PrintSnake(22);
-			difficulty = YR2020;
-			difficultyString = "2020";
+			SetColor(false, GB);	
 		}
+		return dif; 
 	}
 	void PrintColorSelection(int selection)
 	{
-		colorTypeOne = selection;
-		if(selection == BW)
+		if(selection == 1)
 		{
+			colorTypeOne = BW;
 			colorTypeTwo = WB;
-			Clear(42); 
+			Clear(37); 
 			attron(COLOR_PAIR(BW)); 
 			PrintSnake(10);
 			attroff(COLOR_PAIR(BW));
 			//SetColor(selection);
 		}
-		else if(selection == CB)
+		else if(selection == 2)
 		{
-			Clear(42); 
+			colorTypeOne = CBL;
+			Clear(37); 
 			colorTypeTwo = CC; 
-			attron(COLOR_PAIR(CB)); 
+			attron(COLOR_PAIR(CBL)); 
 			PrintSnake(16);
-			attroff(COLOR_PAIR(CB));
+			attroff(COLOR_PAIR(CBL));
 			//SetColor(selection);
 		}
-		else if(selection ==RW)
+		else if(selection ==3)
 		{
-			Clear(42); 
+			colorTypeOne = RW;
+			Clear(37); 
 			colorTypeTwo =RR;
 			attron(COLOR_PAIR(RW)); 
 			PrintSnake(22);
 			attroff(COLOR_PAIR(RW));
 			//SetColor(selection);
 		}
-		else if(selection ==MC)
+		else if(selection ==4)
 		{
-			Clear(42);
+			colorTypeOne = MC;
+			Clear(37);
 			colorTypeTwo = MM; 
 			attron(COLOR_PAIR(MC)); 
 			PrintSnake(28);	
 			attroff(COLOR_PAIR(MC));
 			//SetColor(selection);
 		}
-		else if(selection ==BR)
+		else if(selection ==5)
 		{
+			colorTypeOne = BR;
 			colorTypeTwo = BBL;
-			Clear(42);
+			Clear(37);
 			attron(COLOR_PAIR(BR)); 
 			PrintSnake(34);
 			attroff(COLOR_PAIR(BR));
 			//SetColor(selection);
 		}
-		else if(selection ==BG)
+		else if(selection == 6)
 		{
-			colorTypeTwo = BBL; 
-			Clear(42);
-			attron(COLOR_PAIR(BG)); 
-			PrintSnake(40);	
-			attroff(COLOR_PAIR(BG));
-			//SetColor(selection);
-		}
-		else if(selection ==GY)
-		{
-			Clear(42);
-			attron(COLOR_PAIR(GY)); 
-			PrintSnake(46);	
-			attroff(COLOR_PAIR(GY));
-			//SetColor(selection);
+			Clear(37);
+			colorTypeOne = BW;
+			colorTypeTwo = WB; 
+			SetColor(true, BW);
+			PrintSnake(40); 
+			SetColor(false, BW); 
 		}
 	}
-	int GetGameSize()
-	{
-		int size = 0; 
-		if(gameSize == "Medium")
-			size = MEDIUMX;
-		else if(gameSize == "Small")
-			size = SMALLX; 
-		else if(gameSize == "Large")
-			size = LARGEX; 
-		else
-			size = LARGEX;
-		return size; 
-	}
-	string GetInitials()
+	string GetInitials()//TODO This probably sshould be moved to selection manager. Taking input and printing. To much function for sinle method. 
 	{
 		PrintSnakeHeader(); 
 		Revisited(0, 24, 0);
@@ -926,14 +1407,14 @@ class Terminal
 					temp = input;
 					initials+=temp;
 					i++; 
-
 				}
 			}
 			if(input == 8 || input == 127) 
 			{
 				string temp = initials.substr(0,initials.length()-1);
 				initials = temp; 
-				PrintString(14,2, "             "); 
+				PrintMultiChars("     ",14,2); 
+				//PrintString(14,2, "             "); 
 				i--; 
 			}
 			if(input == '\n')
@@ -947,12 +1428,14 @@ class Terminal
 					enterFlag = true; 
 				}
 			}
-			PrintString(14,2, initials); 
+			
+			PrintMultiChars(initials, 14,2); 
+	//		PrintString(14,2, initials); 
 		
 		}
 		return initials; 
 	}
-	string* StringToInt(int*value, int count)
+	string* StringToInt(int*value, int count)//TODO release resources on function call. 
 	{
 		string *temp = new string[count]; 
 		for(int i = 0; i<count; i++)
@@ -969,29 +1452,43 @@ class Terminal
 	{
 		if(selection == 1)
 		{
+			SetColor(true, GB); 
 			Clear(clear); 
 			PrintSnake(10);
+			SetColor(false, GB); 
 		}
 		else if(selection == 2)
 		{
+			SetColor(true, GB); 
 			Clear(clear); 
 			PrintSnake(16);
+			SetColor(false, GB); 
 		}
 		else if(selection ==3)
 		{
+			SetColor(true, GB); 
 			Clear(clear); 
 			PrintSnake(22);
+			SetColor(false, GB); 
 		}
 		else if(selection ==4)
 		{
+			SetColor(true, GB); 
 			Clear(clear);
 			PrintSnake(28);	
+			SetColor(false, GB); 
 		}
 		else if(selection ==5)
 		{
+			SetColor(true, GB); 
 			Clear(clear);
 			PrintSnake(34);
+			SetColor(false, GB); 
 		}
+	}
+	void EraseAll()
+	{
+		erase(); 
 	}
 	void PrintHighScores(string *name, int *scores)
 	{
@@ -1022,80 +1519,128 @@ class Terminal
 		PrintString(5,113, tempForPrinting[5]); 
 	
 	}
-	void SecurityAlert()
+	bool SecurityAlert()
 	{
 		int i = -1; 
 		while(i ==-1)
 		{
 			i = KeyPress(); 
 			erase(); 
-			PrintSnakeHeader(); 
-			PrintString(13,2, "SECURITY ALERT: Your initials have been evaluated by the highly advance onboard \"Snake AI.\"");
-			PrintString(14,2,  "Basd on your initals it was determined you are a generaly shady individual and not to be trusted."); 
-			PrintString(15,2, "While we understand you didn't cheat on this game, our AI has determined it is only a matter of time before you do.");  
-			PrintString(16,2, "As a result, your score has been deleted. Can't argue with Science!!!");
-			PrintString(19,2, "Sincerely, Mr. Snake"); 
-			PrintString(23,2, "          ----------------------------GOOD BYE-----------------------------------          "); 
+			PrintSnakeHeader();
+			SetColor(true, RR); 
+			PrintMultiChars("SECURITY,,ALERT!!!", 10,3);
+			SetColor(true, RB); 
+			PrintString(16,2, "SECURITY ALERT: Your initials have been evaluated by the highly advance onboard \"Snake AI.\"");
+			PrintString(17,2,  "Basd on your initals it was determined you are a generaly shady individual and not to be trusted."); 
+			PrintString(18,2, "While we understand you didn't cheat on this game, our AI has determined it is only a matter of time before you do.");  
+			PrintString(19,2, "As a result, your score has been deleted. Can't argue with Science!!!");
+			PrintString(21,2, "Sincerely, Mr. Snake"); 
+			PrintString(26,2, "          ----------------------------GOOD BYE-----------------------------------          "); 
+			SetColor(false, RB);
 		}	
-		SetQuitGame(true);
-
+		return true; 
 	}
 
 	void MainScreen(string *names, int *scores)
 	{
 		PrintSnakeHeader();
-		PrintSnakePlayGame(); 
-		PrintSnakeOptions(); 
-		PrintHighScore(); 
+		
+		SetColor(true,GBL); 
+		PrintMultiChars("PLAY,GAME", 11,2); 
+		PrintMultiChars("OPTIONS", 11+6,2); 
+		PrintMultiChars("HIGH,SCORES", 11+12,2);
+		SetColor(false, GBL); 
 		PrintHighScores(names, scores);
-		PrintCurrentSettings(); 
 	}
-	void OptionsScreen()
+	void MainScreen()
 	{
-		PrintSnakeHeader(); 
-		PrintSnakeOld(); 
-		PrintSnakeNew(); 
-		PrintColor();
-		PrintBoardSize();
-		PrintReturn(); 
-		PrintCurrentSettings(); 
+		SetColor(true,GBL); 
+		PrintMultiChars("PLAY,GAME", 11,2); 
+		PrintMultiChars("OPTIONS", 11+6,2); 
+		PrintMultiChars("HIGH,SCORES", 11+12,2);
+		SetColor(false, GBL); 
 	}
-	void DifficultyScreen()
+	void OptionsScreen(bool header)
 	{
-		PrintSnakeHeader(); 
-		PrintEasy(); 
-		PrintHard();
-		Print2020(); 
-		PrintCurrentSettings(); 
+		if(header)
+		{
+			PrintSnakeHeader(); 
+		}
+		SetColor(true,GBL); 
+		PrintMultiChars("OLD,SCHOOL", 11,2); 
+		PrintMultiChars("NEW,SCHOOL", 11+6,2); 
+		PrintMultiChars("COLOR", 11+12,2); 
+		PrintMultiChars("GAME,SIZE", 11+18,2); 
+		PrintMultiChars("RETURN", 11+24,2); 
+		SetColor(false, GBL); 
 	}
-	void PrintColorScreen() 
+	void DifficultyScreen(bool header)
 	{
-		PrintSnakeHeader(); 
-		PrintColor1();
-		PrintColor2();
-		PrintColor3();
-		PrintColor4();
-		PrintColor5();
-		PrintColor6();
-		PrintColor7();
-		PrintCurrentSettings(); 
+		if(header)
+		{
+			PrintSnakeHeader(); 
+		}
+		SetColor(true,GBL); 
+		PrintMultiChars("EASIEST", 11,2); 
+		PrintMultiChars("HARDEST", 11+6,2); 
+		PrintMultiChars("YR,2020", 11+12,2); 
+		PrintString(11+13+4,2,"Warning: For expert players only");	
+		SetColor(false, GBL); 
 	}
-	void PrintSizeScreen()
+	void PrintColorScreen(bool header) 
 	{
-		PrintSnakeHeader(); 
-		PrintSmall(); 
-		PrintMedium(); 
-		PrintLarge(); 
-		PrintCurrentSettings(); 
+		if(header)
+		{
+			PrintSnakeHeader(); 
+		}
+		PrintMultiChars("BLACK/WHT", 11,2); 
+		PrintMultiChars("BLUE/BLUE", 11+6,2); 
+		PrintMultiChars("RED/WHITE", 11+12,2); 
+		PrintMultiChars("RED/CYAN", 11+18,2); 
+		PrintMultiChars("BLUE/RED", 11+24,2); 
+		PrintMultiChars("CUSTOM", 11+30,2); 
+		SetColor(false, GBL); 
+	}
+	void PrintSizeScreen(bool header)
+	{
+		if(header)
+		{
+			PrintSnakeHeader(); 
+		}
+		SetColor(true,GBL); 
+		PrintMultiChars("SMALL", 11,2); 
+		PrintMultiChars("MEDIUM", 11+6,2); 
+		PrintMultiChars("LARGE", 11+12,2); 
 	}
 	void PrintHighScoreScreen(string *names, int *scores)
 	{
 		erase();
 		PrintSnakeHeader(); 
-		PrintHighScore(); 
-		PrintCurrentSettings(); 
+		PrintMultiChars("HIGH SCORES!!!", 11,3); 		
+		//PrintHighScore(); 
 		UpdateTerminal(); 
 		PrintHighScores(names, scores);
+	}
+	void HighScoreDisplay(int scoreNum)
+	{
+		int x;
+		int y; 
+		PrintSnakeHeader(); 
+		string *scoreStr = StringToInt(&scoreNum, 1);
+		getyx(stdscr, y, x);
+		PrintBox(y, 1, 109,26,109,26, GG,RR,false, true); 
+		SetColor(true,GG); 
+		PrintMultiChars("CONGRATULATIONS,...", y+2,3); 
+		PrintMultiChars("NEW,,HIGHSCORE!!!",y+8,8); 
+		SetColor(false,GG); 
+		SetColor(true,BLBL); 
+		PrintMultiChars("YOUR,,SCORE:", y+14,8); 
+		SetColor(true, WW); 
+		PrintMultiChars(*scoreStr, y+20,8);
+		SetColor(false,WW); 
+		getyx(stdscr, y, x);
+		Revisited(2,y+4, 0); 
+		PaintSnakeEasy(y+4, 56+2); 
 	}
 	void Revisited(int x, int y, int length)
 	{
@@ -1280,7 +1825,223 @@ class Terminal
 		SetColor(true, RB);	
 		PrintString(y+1,x+18+2, "<");
 		SetColor(false, RB);
-	}		
+	}
+	bool PrintFireWorks(int count, int y, int x, bool direction) 
+	{
+		bool done = false; 
+		int direct = 1; 
+		if(!direction)
+		{
+			direct = -1;
+		}
+		if(count >= 150)
+		{
+			done = printExplode(count,y+1,x-2);
+		
+		}
+		else
+		{
+			SetColor(true,YR); 
+		}
+		if(count == 140)
+		{
+			PrintString(y-8,x,   "          *  ");
+			PrintString(y-8,x,   "          ");
+		}
+		if(count == 130)
+		{
+			PrintString(y-8,x,   "          *  ");
+			PrintString(y-7,x,   "         ");
+		}
+		if(count == 120)
+		{
+			PrintString(y-8,x,   "          *  ");
+			PrintString(y-6,x,   "         ");
+		}
+		if(count == 110)
+		{
+			PrintString(y-8,x,   "          *  ");
+			PrintString(y-5,x,   "         ");
+		}
+		if(count == 100)
+		{
+			PrintString(y-8,x,   "          *  ");
+			PrintString(y-4,x,   "          ");
+		}
+		if(count == 90)
+		{
+			PrintString(y-8,x,   "         _    ");
+		 	PrintString(y-3,x,   "          ");
+		}
+		if(count == 80)
+		{
+			PrintString(y-8,x,   "        _     ");
+			PrintString(y-2,x   ,"         ");
+		}
+		if(count == 70)
+		{
+			PrintString(y-7,x,   "       /      ");
+//			PrintString(y-1,x,   "         ");
+
+		}
+		if(count == 60)
+		{
+			PrintString(y-6,x,   "      /      ");
+//			PrintString(y,x,     "          ");
+		}
+		if(count ==50) 
+		{
+			PrintString(y-5,x,   "     /    ");
+		}
+		if(count == 40)
+		{
+			PrintString(y-4,x,   "     |    ");
+		}
+		if(count == 30)
+		{
+		 	PrintString(y-3,x,   "     |    ");
+		}
+		if(count == 20)
+		{
+			PrintString(y-2,x   ,"     |    ");
+		}
+//		if(count == 10)
+//		{
+//			PrintString(y-1,x,   "     |    ");
+//		}
+		
+//		if(count == 0)
+//		{
+//			PrintString(y,x,     "     |    ");
+//		
+		return done; 
+	}
+	void printString(int y, int x, string str)
+	{
+		PrintString(y,x,str);
+	}
+	bool printExplode(int count, int y, int x)
+	{
+		bool done = false; 
+		if(count == 150)
+		{
+			printString(y-10,x,"           * *      ");
+			printString(y-9,x, "          * * *     ");
+			printString(y-8,x, "           * *      "); 
+		}
+		if(count == 160) 
+		{
+			printString(y-11,x,"          *   *     ");
+			printString(y-10,x,"           * *      ");
+			printString(y-9,x, "        * *   * *   ");
+			printString(y-8,x, "           * *      "); 
+			printString(y-7,x, "         *     *    "); 
+		}
+		
+		if(count == 170)
+		{
+			printString(y-12,x,"        *       *       ");
+			printString(y-11,x,"          *   *         ");
+			printString(y-10,x,"           * *          ");
+			printString(y-9,x, "      * * *   * * *     ");
+			printString(y-8,x, "           * *          "); 
+			printString(y-7,x, "         *     *        "); 
+			printString(y-6,x, "        *       *       "); 
+		}
+		
+		if(count == 180)
+		{
+			printString(y-13,x,"      *           *      ");
+			printString(y-12,x,"        *       *        ");
+			printString(y-11,x,"          *   *          ");
+			printString(y-10,x,"                         ");
+			printString(y-9,x, "    * * *      * * *     ");
+			printString(y-8,x, "                         "); 
+			printString(y-7,x, "         *     *         "); 
+			printString(y-6,x, "        *       *        "); 
+			printString(y-5,x, "       *         *       "); 
+		}
+		
+
+		if(count ==190)
+		{
+			printString(y-14,x,"   *                 *   ");
+			printString(y-13,x, "      *           *      ");
+			printString(y-12,x,"        *       *        ");
+			printString(y-11,x,"          *   *          ");
+			printString(y-10,x,"                         ");
+			printString(y-9,x, "     * * *      * * *    ");
+			printString(y-8,x, "  *                    * "); 
+			printString(y-7,x, "         *     *         "); 
+			printString(y-6,x, "        *       *        "); 
+			printString(y-5,x, "       *         *       "); 
+			printString(y-4,x, "       *         *       "); 
+		}
+		
+		if(count == 200)
+		{
+			printString(y-14,x,"   *                 *   ");
+			printString(y-13,x,"      *           *      ");
+			printString(y-12,x,"        *       *        ");
+			printString(y-11,x,"                         ");
+			printString(y-10,x,"                         ");
+			printString(y-9,x, "     * *          * *    ");
+			printString(y-8,x, "  *                    * "); 
+			printString(y-7,x, "                         "); 
+			printString(y-6,x, "        *       *        "); 
+			printString(y-5,x, "       *         *       "); 
+			printString(y-4,x, "       *         *       "); 
+		}
+		if(count ==210)
+		{
+			printString(y-14,x,"   *                 *    ");
+			printString(y-13,x,"      *           *       ");
+			printString(y-12,x,"                          ");
+			printString(y-11,x,"                          ");
+			printString(y-10,x,"                          ");
+			printString(y-9,x, "     *              *     ");
+			printString(y-8,x, "  *                    *  "); 
+			printString(y-7,x, "                          "); 
+			printString(y-6,x, "                          "); 
+			printString(y-5,x, "       *         *       "); 
+			printString(y-4,x, "       *         *       "); 
+		}
+		if(count ==220 || count == 240 || count == 280 || count == 320 )
+		{
+			printString(y-14,x,"   *                 *   ");
+			printString(y-13,x,"                         ");
+			printString(y-12,x,"                         ");
+			printString(y-11,x,"                         ");
+			printString(y-10,x,"                         ");
+			printString(y-9,x ,"                         ");
+			printString(y-8, x,"  *                    * "); 
+			printString(y-7, x,"                         "); 
+			printString(y-6, x,"                         "); 
+			printString(y-5, x,"                         "); 
+			printString(y-4, x,"       *         *       "); 
+			if(count >250) 
+			{
+				done = true; 
+			}
+		}
+		
+		if(count == 230 || count == 250 || count == 290 || count == 330)
+		{
+			printString(y-14,x,"                         ");
+			printString(y-13,x,"                         ");
+			printString(y-12,x,"                         ");
+			printString(y-11,x,"                         ");
+			printString(y-10,x,"                         ");
+			printString(y-9,x ,"                         ");
+			printString(y-8, x,"                         "); 
+			printString(y-7, x,"                         "); 
+			printString(y-6, x,"                         "); 
+			printString(y-5, x,"                         "); 
+			printString(y-4, x,"                         "); 
+		}
+		return done; 
+	}
+	 	 	
 
 };
 #endif 
