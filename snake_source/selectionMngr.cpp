@@ -48,14 +48,14 @@ void SelectionManager::CustomColorSelect(Settings &myGame, int *scoresNum, strin
 	while(!myGame.QuitGame() && !returnFlag)
 	{
 		input = KeyPress(); 
-		if(input == KEY_UP)
+		if(input ==  KEY_UP)
 		{
 			if(posY > 1)
 			{
 				posY--; 
 			}
 		}
-		else if(input == KEY_DOWN)
+		else if(input ==KEY_DOWN)
 		{
 			if(posY < 2)
 			{

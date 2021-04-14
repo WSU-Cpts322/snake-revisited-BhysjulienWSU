@@ -319,7 +319,7 @@ int GameManager::PlayGame(Settings &myGame)
 	{		
 		bool check = false; 
 		int temp_input = terminal.KeyPress();
-		if(temp_input == 'a' || temp_input == 'd' || temp_input == 'w' || temp_input == 's' || temp_input == KEY_DOWN || temp_input == KEY_UP || temp_input == KEY_LEFT || temp_input == KEY_RIGHT)
+		if(temp_input == 'a' || temp_input == 'd' || temp_input == 'w' || temp_input == 's' || temp_input ==  KEY_DOWN || temp_input ==  KEY_UP || temp_input ==  KEY_LEFT || temp_input ==  KEY_RIGHT)
 		{
 			input = temp_input; 	
 			count++; 
