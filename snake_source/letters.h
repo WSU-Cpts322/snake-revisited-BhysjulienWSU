@@ -397,16 +397,16 @@ class Letters
 		int letterX(int y, int x)
 		{
 			int width = 5; 
-			string line1 = "X   X";	
-			string line2 = " X X ";	
-			string line3 = "  X  ";	
-			string line4 = " X X ";	
-			string line5 = "X   X";	
+			string line1 = "X";	
 			PrintString(y, x, line1); 
-			PrintString(y+1, x, line2); 
-			PrintString(y+2, x, line3); 
-			PrintString(y+3, x, line4); 
-			PrintString(y+4, x, line5); 
+			PrintString(y, x+4, line1); 
+			PrintString(y+1, x+3, line1); 
+			PrintString(y+1, x+1, line1); 
+			PrintString(y+2, x+2, line1); 
+			PrintString(y+4, x, line1); 
+			PrintString(y+4, x+4, line1); 
+			PrintString(y+3, x+3, line1); 
+			PrintString(y+3, x+1, line1); 
 			return(width); 
 		}
 		int letterY(int y, int x)
@@ -552,7 +552,7 @@ class Letters
 		{
 			int width = 5; 
 			string line1 = "XXXXX";	
-			string line2 = "    X";	
+			string line2 = "X";	
 			PrintString(y, x, line1); 
 			PrintString(y+1, x+4, line2); 
 			PrintString(y+2, x+4, line2); 
@@ -636,12 +636,24 @@ class Letters
 			PrintString(y+3, x, line1); 
 			return(width); 
 		}
+		int UnderScore(int y, int x) 
+		{
+			int width = 5; 
+			string line1 = "_____";
+			PrintString(y+4,x, line1); 	
+			return width; 
+	
+		}
 		
 		
 	public: 
 		void PrintString(int y, int x, string String)
 		{	
   			mvprintw(y,x, String.c_str()); 
+		}
+		int pubUnderScore(int y, int x) 
+		{
+			return UnderScore(y ,x); 
 		}
 		int pubSmallSpace(int y, int x)
 		{
@@ -826,6 +838,9 @@ class Letters
 			{
 				switch (parsed[j])
 				{
+					case '_':
+						x = x + pubUnderScore(y,x) + 1; 
+						break; 
 					case '=':
 						x = x + pubEqual(y,x) + 1; 
 						break; 

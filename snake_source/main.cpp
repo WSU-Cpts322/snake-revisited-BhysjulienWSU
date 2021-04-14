@@ -1,12 +1,16 @@
 #include <string>
-#include "colors.h" 
+#include "security.h"
+#include "colors.h"
+#include "fileIO.h"
 #include "scoreManager.h"
 #include "terminal.h"
+#include "specialPrints.h"
 #include "settings.h"
 #include "snake.h"
 #include "fruit.h"
+#include "badSnake.h"
 #include "selectionMngr.h"
-#include "gameManager.h" 
+#include "gameManager.h"
 #define UP 1
 #define DOWN 2
 #define LEFT 3
@@ -23,7 +27,7 @@ using namespace std;
 //bool GameModeSelect(bool enterFlag, int position, Terminal &myGame);
 //bool Compare(int y, int x, int direction, Terminal &myGame, Snake sanke);
 //bool SpaceCheck(int y, int x, Terminal &myGame, char checkChar);
-int StartGame(Terminal &terminal, Settings &myGame); 
+int StartGame(Settings &myGame); 
 
 int main()
 
@@ -40,30 +44,16 @@ int main()
 	const int SCREEN_WIDTH = 25;
 	const int SCREEN_HEIGHT = 25; 
 	//Create a Terminal Object wrapper. 
-	ScoreKeeper scores;
+	Security scores;
 	string names [6]; 
 	int scoresNum[6]; 
 	scores.ReadStart("scores"); 
 	scores.ReadStart("security"); 
 	scores.GetHighScores(scoresNum, names); 
 	Settings myGame(SCREEN_HEIGHT, SCREEN_WIDTH);
-	Terminal terminal;
-//	for(int i = 0; i < 64; i++)
-//	{
-//		terminal.SetColor(true, i);
-//		string step = to_string(i);
-//		terminal.PrintString(i, 1, step + ": XXXXXX"); 
-//		terminal.SetColor(false, i);
-//	}
-//	terminal.UpdateTerminal(); 
-//	while(true)
-//	{
-//		int i = 0; 
-//	}
-	//Create a snake Object.
-	//x and y are temp. 
-	//Check to s:wq
-	//ee if the user has selected for the game to be over.
+	myGame.SetPrimColor(BW);
+	myGame.SetSecondColor(BLBL); 
+	SpecialPrint terminal;
 	int input = 0; 
 	bool gameComplete = true;
 	string option;
@@ -72,24 +62,27 @@ int main()
 	{
 		if(gameComplete)
 		{
+			SelectionManager select;
 			scores.GetHighScores(scoresNum, names); 
-			option = SelectionManager::menuSelection(terminal, myGame, names,scoresNum);
+			option = select.menuSelection(myGame, names,scoresNum);
 		}
 		input = terminal.KeyPress();
 		if(option == "Options")
 		{
+			SelectionManager select;
 			scores.GetHighScores(scoresNum, names); 
 			terminal.OptionsScreen(true);
-			SelectionManager::OptionsSelect(terminal, myGame, scoresNum, names);
+			option = select.OptionsSelect(myGame, scoresNum, names);
 		}//Go to options game board. 
 		else if(option == "High Scores")
 		{
-			myGame.SetQuitGame(SelectionManager::ShowScores(terminal,myGame, scores)); 	
+			SelectionManager select; 
+			myGame.SetQuitGame(select.ShowScores(myGame, scores)); 	
 			gameComplete = true;
 		}	//Go to view the high scores;; 
 		else if(option == "Play Game")	//launch game with current options. 
 		{
-			int intScore = 	StartGame(terminal, myGame);
+			int intScore = 	StartGame(myGame);
 		       	bool check = scores.HighScoreCheck(intScore, myGame.GetGameType(1), myGame.GetDifficultyStr());  	 
 
 			if(check)// Then user needs to enter their initials
@@ -149,8 +142,9 @@ int main()
 						count = 0; 
 					}
 				}
-				terminal.EraseAll(); 
-				string name = terminal.GetInitials();
+				terminal.EraseAll();
+			       	SelectionManager select; 	
+				string name = select.GetInit(3);
 				if(!scores.SecurityCheck(name))
 				{
 					scores.AssignScore(name); 
@@ -170,9 +164,15 @@ int main()
 		{
 			Settings WSUGame(35,188, "WSU");
 			GameManager playGame(WSUGame.GetHeight(), WSUGame.GetWidth(), WSUGame.ScoreMultiplier(), "0", 10, myGame.GetDifficulty());
-		        terminal.ChangeColor(BR,RW);	
-			playGame.PlayGame(terminal, WSUGame);
-
+		        terminal.ChangeColor(BR,RW);
+			WSUGame.SetPrimColor(BR); 
+			WSUGame.SetSecondColor(RW); 
+			playGame.PlayGame(WSUGame);
+		}
+		else if(option == "admin")
+		{
+			SelectionManager select; 
+			select.AdminSettings(scores); 
 		}
 		if(input == 'q')
 		{
@@ -184,24 +184,30 @@ int main()
 	scores.PublicWrite("security"); 
 	return 0;
 }
-int StartGame(Terminal &terminal, Settings &myGame)
+int StartGame(Settings &myGame)
 {
 	int score; 
 	if(myGame.GetHeight() == 20)
 	{
 		GameManager playGame(myGame.GetHeight(), myGame.GetWidth(), myGame.ScoreMultiplier(), "0", 1, myGame.GetDifficulty()); 
-		score = playGame.PlayGame(terminal, myGame); 
+		score = playGame.PlayGame(myGame); 
 	}
 	else if(myGame.GetHeight() == 30)
 	{
 		GameManager playGame(myGame.GetHeight(), myGame.GetWidth(), myGame.ScoreMultiplier(), "0", 2, myGame.GetDifficulty()); 
-		score = playGame.PlayGame(terminal, myGame); 
+		score = playGame.PlayGame(myGame); 
 	}
 	else if(myGame.GetHeight() == 40)
 	{
 		GameManager playGame(myGame.GetHeight(), myGame.GetWidth(), myGame.ScoreMultiplier(), "0", 3, myGame.GetDifficulty()); 
-		score = playGame.PlayGame(terminal, myGame); 
+		score = playGame.PlayGame(myGame); 
 	}
+	else 
+	{
+		GameManager playGame(myGame.GetHeight(), myGame.GetWidth(), myGame.ScoreMultiplier(), "0", 1, myGame.GetDifficulty()); 
+		score = playGame.PlayGame(myGame); 
+	}
+
 	//while(!myGame.GameOve() && !myGame.QuitGame()
 	return score; 
 }

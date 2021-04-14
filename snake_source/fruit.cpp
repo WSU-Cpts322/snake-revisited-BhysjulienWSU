@@ -7,42 +7,23 @@ Fruit::Fruit(int _width, int _height)
 	height = _height;
 }
 //returns Y position of current fruit
-int Fruit::getFruitY()
-{
-	return fruitY;
-}
-//returns x position of current fruit 
-int Fruit::getFruitX()
-{
-	return fruitX;
-}
-
-bool Fruit::GetPower()
-{
-	return power; 
-}
-void Fruit::SetPower(bool _power)
-{
-	power = _power; 
-}
-
 void Fruit::setFruit(int y, int x)
 {
 	bool flag = true; 
-	fruitY = 1 + (rand() % height-2);//-2 to stay inside boarders. 
-	fruitX = 1 + (rand() % width-2);
+	setY(1 + (rand() % height-2));//-2 to stay inside boarders. 
+	setX(1 + (rand() % width-2));
 	while(flag)
 	{
 	
-		if(fruitY == y && fruitX == x)
+		if(getY() == y && getX() == x)
 		{
-			fruitY = 2 + (rand() % (height-4));//-2 to stay inside boarders. 
-			fruitX = 2 + (rand() % (width-4));
+			setY(2 + (rand() % (height-4)));//-2 to stay inside boarders. 
+			setX(2 + (rand() % (width-4)));
 		}	
-		else if(fruitY < 2 || fruitY >= height-2 || fruitX >= width-2 || fruitX < 2)
+		else if(getY() < 2 || getY() >= height-2 || getX() >= width-2 || getX() < 2)
 		{
-			fruitY = 2 + (rand() % (height-4));//-2 to stay inside boarders. 
-			fruitX = 2 + (rand() % (width-4));
+			setY(2 + (rand() % (height-4)));//-2 to stay inside boarders. 
+			setX(2 + (rand() % (width-4)));
 		}
 		else
 		{
@@ -60,11 +41,11 @@ void Fruit::DeterminePower()
 	int i = (rand() % 10);
 	if(i == 10 || i ==5 || i == 0)
 	{
-		power = true; 
+		SetPower(true); 
 	}
 	else 
 	{
-		power = false; 
+		SetPower(false); 
 	}
 }
 

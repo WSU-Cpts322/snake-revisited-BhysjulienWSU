@@ -8,8 +8,8 @@ void Snake::Head_Pos_Chng()
 	{
 		if (Snake_Length == 1)
 		{
-			snake_tail_x[0] = Snake_x;
-			snake_tail_y[0] = Snake_y;
+			snake_tail_x[0] = getX();
+			snake_tail_y[0] = getY();
 		}
 		if (Snake_Length > 1) //move the array up by one
 		{
@@ -18,23 +18,23 @@ void Snake::Head_Pos_Chng()
 				snake_tail_x[i + 1] = snake_tail_x[i];
 				snake_tail_y[i + 1] = snake_tail_y[i];
 			}
-			snake_tail_x[0] = Snake_x;
-			snake_tail_y[0] = Snake_y;
+			snake_tail_x[0] = getX();
+			snake_tail_y[0] = getY();
 		}
 	}
 	switch (Snake_Direction)
 	{
 	case up:
-		Snake_y--;
+		setY(getY()-1);
 		break;
 	case down:
-		Snake_y++;
+		setY(getY()+1);
 		break;
 	case right:
-		Snake_x++;
+		setX(getX()+1);
 		break;
 	case left:
-		Snake_x--;
+		setX(getX()-1);
 		break;
 	}
 }
@@ -45,22 +45,6 @@ void Snake::SetPower(bool set)
 bool Snake::GetPower()
 {
 	return power; 
-}
-void Snake::SetHeadBool(bool set)
-{
-	SnakeHead_bool = set; 
-}
-bool Snake::GetHeadBool()
-{
-	return SnakeHead_bool; 
-}
-void Snake::SetBool(int snakePos, bool set)
-{
-	snake_bool[snakePos] = set; 
-}
-bool Snake::GetBool(int snakePos)
-{
-	return snake_bool[snakePos]; 
 }
 int Snake::Direct(int Snake_direction_int)
 {
@@ -88,23 +72,29 @@ Snake::Snake(int width, int height)
 	//		srand(time(NULL));
 	//		Snake_x = std::rand() % width;
 	//		Snake_y = std::rand() % height;
-	Snake_x = width/2;
-	Snake_y = height/2;
+	setX(width/2);
+	setY(height/2);
 	Snake_Length = 0;
 	power = false; 
 }
-Snake::Snake(int width, int height, int length)
+//Snake::Snake(int width, int height, int length)
+//{
+//	setX(2+(rand() %(width-2)));
+//	setY(1);
+//	Snake_Length = length; 
+//}
+void Snake::SetLength(int length)
 {
-	Snake_x = 2+(rand() %(width-2));
-	Snake_y = 1;
-	Snake_Length = length; 
+	Snake_Length = length;
 }
+
+Snake::Snake(){}
 int Snake::getFinYTail()
 {
 	int tempY;
 	if(Snake_Length == 0)
 	{
-		tempY = Snake_y;
+		tempY = getY();
 	}
 	else
 	{
@@ -117,7 +107,7 @@ int Snake::getFinXTail()
 	int tempX;
 	if(Snake_Length == 0)
 	{
-		tempX = Snake_x;
+		tempX = getX();
 	}
 	else
 	{
@@ -128,8 +118,8 @@ int Snake::getFinXTail()
 
 void Snake::SetPosition(int Y, int X, int length, int direction)
 {
-	Snake_y = Y;
-	Snake_x = X;
+	setY(Y);
+	setX(X);
 	Snake_Length = length; 
 	Direct(direction); 
 }
@@ -142,14 +132,6 @@ int Snake::getxTail(int x)
 int Snake::getyTail(int y)
 {
 	return snake_tail_y[y];
-}
-int Snake::getX()
-{
-	return Snake_x;
-}
-int Snake::getY()
-{
-	return Snake_y;
 }
 int Snake::GetLength()
 {
