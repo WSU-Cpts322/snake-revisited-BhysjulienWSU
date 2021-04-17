@@ -41,9 +41,7 @@ class Terminal: public Letters
 	int GetCurrentPrimaryColor();
 	int GetCurrentSecondColor();
 	void ChangeColor(int colorChangeOne, int colorChangeTwo);
-	void PrintBoard(string gameTypeString, int width, int height);
 	void PrintBox(int topLeftY, int topLeftX, int wDiv, int hDiv, int width, int height, int colorBoarder, int colorFill, bool divide, bool fill);
-	void PrintWSUGameBoard();
 	void Clear(int rows);
 	//string* StringToInt(int*value, int count);//TODO release resources on function call. 
 	void PrintString(int y, int x, string String);

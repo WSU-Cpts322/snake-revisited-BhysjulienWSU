@@ -1,6 +1,6 @@
 #include "settings.h"
 
-Settings::Settings(int Height, int Width)
+Settings::Settings()
 {
 	height = MEDIUMY;
 	width = MEDIUMX;

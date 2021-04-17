@@ -1,5 +1,5 @@
 #include "gameManager.h" 
-bool GameManager::SpaceCheck(int y, int x, Terminal &terminal, char checkChar)
+bool GameManager::SpaceCheck(int y, int x, GameMap &terminal, char checkChar)
 {
 	bool collision = false; 
 	int check = mvinch(y, x)& A_CHARTEXT;
@@ -11,7 +11,7 @@ bool GameManager::SpaceCheck(int y, int x, Terminal &terminal, char checkChar)
 }
 
 //Compare function for determing future position of Snake. TODO restruct good snake logic to eliminate this function and use space check. 
-bool GameManager::Compare(int y, int x, int direction, Terminal &terminal, Snake sanke)
+bool GameManager::Compare(int y, int x, int direction, GameMap &terminal, Snake sanke)
 
 {
 	bool collision = false; 
@@ -37,9 +37,16 @@ bool GameManager::Compare(int y, int x, int direction, Terminal &terminal, Snake
 		boardX--; 
 	}
 	int check = mvinch(boardY, boardX)& A_CHARTEXT;
-	if(check != 32) //<<---- Trial and error found 288 to be whitespace in ncurses???? 
+	if(!sanke.GetPower())
 	{
-		collision = true;
+		if(check != 32)
+		{
+			collision = true;
+		}
+	}
+	else if(check != 32 && check!= 'O')
+	{
+		collision = true; 
 	}
 	return collision; 
 }
@@ -92,7 +99,7 @@ void GameManager::ChangeDirection(Snake &snake, int input, Settings &myGame, int
 	}
 	
 }
-void GameManager::FruitMatch(Fruit &fruit, Settings &myGame, Terminal &terminal,  bool snakePower)
+void GameManager::FruitMatch(Fruit &fruit, Settings &myGame, GameMap &terminal,  bool snakePower)
 {
 	int check = 0;
 	bool check2 = true;
@@ -122,7 +129,7 @@ void GameManager::FruitMatch(Fruit &fruit, Settings &myGame, Terminal &terminal,
 	terminal.SetColor(true, terminal.GetCurrentPrimaryColor()); 
 //	mvprintw(fruit.getFruitY(),fruit.getFruitX(), fruitChar.c_str());
 }
-int GameManager::SnakeAttack(int count, int &attackNumMove, BadSnake *badSnake, Settings &myGame, Terminal &terminal)
+int GameManager::SnakeAttack(int count, int &attackNumMove, BadSnake *badSnake, Settings &myGame, GameMap &terminal)
 {	
 
 	bool check = false;
@@ -201,7 +208,7 @@ int GameManager::SnakeAttack(int count, int &attackNumMove, BadSnake *badSnake, 
 	return count;
 
 }
-void GameManager::GameSetup(Terminal &terminal, Settings &myGame, Snake &snake, BadSnake *badSnake, Fruit *fruit) 
+void GameManager::GameSetup(GameMap &terminal, Settings &myGame, Snake &snake, BadSnake *badSnake, Fruit *fruit) 
 {
 	terminal.ChangeColor(myGame.GetPrimColor(), myGame.GetSecondColor());
 	terminal.EraseAll(); 	
@@ -237,7 +244,7 @@ void GameManager::GameSetup(Terminal &terminal, Settings &myGame, Snake &snake, 
 	PrintFruit(fruit, terminal);
 	terminal.SetColor(false, myGame.GetPrimColor());
 }
-void GameManager::PrintFruit(Fruit *fruit, Terminal &terminal)
+void GameManager::PrintFruit(Fruit *fruit, GameMap &terminal)
 {
 	for(int i = 0; i<fruitCount; i++)
 	{
@@ -305,7 +312,7 @@ GameManager::~GameManager()
 //TODO Remove Terminal dependency. Create seperate color Class and then only pass in width and heiight. 
 int GameManager::PlayGame(Settings &myGame)
 {
-	Terminal terminal;
+	GameMap terminal;
 	terminal.SetColor(myGame.GetPrimColor(), myGame.GetSecondColor()); 	
 	Snake snake(width,height);
 	badSnake = (BadSnake*)malloc(sizeof(BadSnake)*numOfSnakes);//Make number of Snakes a variable for constructor. More snakes on Hard. 

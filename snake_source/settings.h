@@ -33,7 +33,7 @@ private:
 
 	public: 
 	
-	Settings(int Height, int Width);
+	Settings();
 	Settings(int Height, int Width, string special);
 	void SetPrimColor(int col);
 	void SetSecondColor(int col);
