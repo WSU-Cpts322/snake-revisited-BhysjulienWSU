@@ -38,8 +38,8 @@ class Terminal: public Letters
 	void printString(int y, int x, string str);
 	void ClearTerminal();
 	void UpdateTerminal();
-	int GetCurrentPrimaryColor();
-	int GetCurrentSecondColor();
+	int GetCurrentPrimaryColor(); //Artifact 
+	int GetCurrentSecondColor();  //Artifact 
 	void ChangeColor(int colorChangeOne, int colorChangeTwo);
 	void PrintBox(int topLeftY, int topLeftX, int wDiv, int hDiv, int width, int height, int colorBoarder, int colorFill, bool divide, bool fill);
 	void Clear(int rows);
