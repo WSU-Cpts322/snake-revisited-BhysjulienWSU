@@ -183,9 +183,22 @@ void FileIO::ReadSecurity(string fileName)
 	fileIn.open(fileName,ifstream::binary);
 	while(std::getline(fileIn,readTemp))
 	{
-		readTemp = ConvertToUp(readTemp); 
-		readTemp.resize(3);
-		securityBlock[i] = readTemp; 	
+		if(readTemp != "password")
+		{
+			readTemp = ConvertToUp(readTemp); 
+			readTemp.resize(3);
+			securityBlock[i] = readTemp; 	
+		}
+		else if(readTemp == "password")
+		{
+			string del = " "; 
+			readTemp = readTemp.erase(0, readTemp.find(del) + del.length()); 
+			readTemp = ConvertToUp(readTemp); 		
+			password = readTemp;
+			passwordLen = password.length(); 	
+		}
+
+
 	}
 }
 string FileIO::ConvertToUp(string readTemp)
@@ -199,6 +212,18 @@ string FileIO::ConvertToUp(string readTemp)
 	string str(myArray); 
 	readTemp = str; 
 	return str; 
+}
+void FileIO::setPassword(string token)
+{
+	password = token; 
+}
+string FileIO::getPassword()
+{
+	return password;
+}
+int FileIO::getPasswordLen() 
+{
+	return password.length();
 }
 void FileIO::ReadFile(string fileName)
 {
@@ -224,10 +249,29 @@ void FileIO::ReadFile(string fileName)
 				int j = 0; 
 				while(std::getline(fileIn,readTemp)&& j<100)
 				{
-					readTemp = ConvertToUp(readTemp); 
-					readTemp.resize(3);
-					securityBlock[j]= readTemp;
-					j++;
+					if(readTemp.find("password") == std::string::npos)
+					{
+						readTemp = ConvertToUp(readTemp); 
+						readTemp.resize(3);
+						securityBlock[j]= readTemp;
+						j++;
+					}
+					else if(readTemp.find("password") != std::string::npos)
+					{
+						string del = " ";
+						readTemp = readTemp.erase(0, readTemp.find(del) + del.length()); 
+						for(unsigned i = 0; i<readTemp.length(); i++)
+						{
+							if(i%2 == 0)
+							{
+								readTemp[i] = readTemp[i]-100;
+							}
+							else 
+								readTemp[i] = readTemp[i] +100;
+						}
+						password = readTemp;
+						passwordLen = password.length(); 
+					}
 				}
 					
 			}
@@ -306,6 +350,17 @@ void FileIO::PublicWrite(string type)
 				baddies << "\n"; 
 			}
 			index++;
+		}
+		if(password != "")
+		{
+			for(unsigned i = 0; i<password.length(); i++)
+			{
+				if(i%2 == 0) 
+					password[i] = password[i] +100;
+				else
+					password[i] = password[i] -100; 
+			}
+			baddies << "password " + password; 
 		}
 		string temp = baddies.str();
 		ofstream fileOut("security", ofstream::binary);

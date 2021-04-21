@@ -19,6 +19,7 @@ class SelectionManager: public SpecialPrint
 		bool SizeModeSelect(bool enterFlag, int position, Settings &myGame, int * scoresNum, string * names);
 		void PrintSelection(string tempStr, int posY, int posX, string &c11,string &c12, string &c21, string &c22, char temp, int tempColor);
 		bool GameModeSelect(bool enterFlag, int position, Settings &myGame, int * scoresNum, string * names);
+		void SecurityProfile(Security &scores);
 	public:
 		//Don't allow creating an instance of this object. 
 		SelectionManager();
@@ -28,6 +29,8 @@ class SelectionManager: public SpecialPrint
 		string menuSelection(Settings &myGame, string *names, int *scores);
 		string GetInit(int length);
 		void CustomSize(Settings &mygame, int *scoresNum, string *names); 
+		string SetPassword(bool newcheck); 
+		bool PasswordInput(string password); 
 };
 
 #endif

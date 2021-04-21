@@ -27,6 +27,28 @@ void SpecialPrint::PrintCurrentSettings(string gameS, string gameTypeString, str
 	//mvprintw(5, 60, scoreMulti.c_str()); 
 	move(0,0); 
 }
+void SpecialPrint::PrintKey(int y) 
+{
+	int j = 65;                                         
+	string layer1 = "	               #####          ";
+        string layer2 = "                     ##   ##         ";
+        string layer3 = "                    ##     ##        ";
+	string layer4 = "######################     ###       ";
+	string layer5 = "######################     ###       ";
+	string layer6 = "###   ###           ##     ##        ";
+	string layer7 = "###   ###	      ##   ##         ";
+        string layer8 = "###   ###             #####          ";
+
+	mvprintw(y,j, layer1.c_str()); 
+	mvprintw(y+1,j, layer2.c_str());
+	mvprintw(y+2,j, layer3.c_str());
+	mvprintw(y+3,j, layer4.c_str());
+	mvprintw(y+4,j, layer5.c_str());
+	mvprintw(y+5,j, layer6.c_str());
+	mvprintw(y+6,j, layer7.c_str());
+	mvprintw(y+7,j, layer8.c_str());
+
+}
 void SpecialPrint::PrintSnake(int y)
 {
 	int j = 65; 
@@ -530,6 +552,23 @@ void SpecialPrint::PrintOptions(int selection)
 		SetColor(false, GB);	
 	}
 }
+void SpecialPrint::PrintSecSelection(int selection)
+{     
+	if(selection == 1)
+	{
+		SetColor(true, GB);	
+		Clear(20); 
+		PrintKey(10); 
+		SetColor(false, GB);	
+	}
+	if(selection ==2)
+	{
+		SetColor(true, GB);	
+		Clear(20); 
+		PrintKey(16); 
+		SetColor(false, GB);	
+	}
+}
 //Function that prints game size based on index and returns a string based on that selection. 
 string SpecialPrint::PrintSizeSelection(int selection)
 {
@@ -756,7 +795,7 @@ int SpecialPrint::GetNumbers(bool &myG, int y, int x, int color, int color2)//TO
 	SetColor(false,color); 
 	return size;
 }	
-string SpecialPrint::GetInitials(int length, int y, int x, int color, int color2)//TODO This probably sshould be moved to selection manager. Taking input and printing. To much function for sinle method. 
+string SpecialPrint::GetInitials(int length, int y, int x, int color, int color2, bool pw)//TODO This probably sshould be moved to selection manager. Taking input and printing. To much function for sinle method. 
 {
 	SetColor(true,color); 
 	int input;
@@ -788,7 +827,9 @@ string SpecialPrint::GetInitials(int length, int y, int x, int color, int color2
 			string temp = initials.substr(0,initials.length()-1);
 			initials = temp; 
 			SetColor(true,color2); 
-			PrintMultiChars("   ",y,x); 
+			PrintMultiChars("   ",y,x);
+		       	if(length > 3)	
+				PrintMultiChars("          ",y,x);
 			//PrintString(14,2, "             "); 
 			SetColor(true,color); 
 			i--; 
@@ -806,8 +847,13 @@ string SpecialPrint::GetInitials(int length, int y, int x, int color, int color2
 				enterFlag = true; 
 			}
 		}
-		
-		PrintMultiChars(initials, y,x); 
+		if(!pw)
+			PrintMultiChars(initials, y,x); 
+		else 
+		{
+			string star(initials.length(), '*'); 
+			PrintMultiChars(star, y,x); 
+		}
 //		PrintString(14,2, initials); 
 	
 	}
@@ -904,6 +950,16 @@ bool SpecialPrint::SecurityAlert()
 		SetColor(false, RB);
 	}	
 	return true; 
+}
+void SpecialPrint::PrintSecurityOptionScreen()
+{
+	PrintSnakeHeader(); 
+	SetColor(true,RB);
+	PrintString(11,2, "Which option would you like to make changes too"); 
+	SetColor(true,GR);
+	PrintMultiChars("SECURITY", 13,2); 
+	PrintMultiChars("PASSWORD", 19,2);	
+	SetColor(false,GR); 
 }
 
 void SpecialPrint::MainScreen(string *names, int *scores)

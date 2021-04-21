@@ -34,7 +34,7 @@ void SelectionManager::CustomColorSelect(Settings &myGame, int *scoresNum, strin
 	PrintMultiChars("1ST:,,,,,,,,,,,,,,,,,,,,,,,,,/,,,", 34,2); 
 	PrintMultiChars("2ND:,,,,,,,,,,,,,,,,,,,,,,,,,/,,,", 41,2);
 	SetColor(true,BR); 
-	PrintString(49,2,"Menu supports WSDA navigation only"); 
+	PrintString(49,2,"Menu supports Arrow-Key navigation only"); 
 	SetColor(false,BR); 
 	UpdateTerminal();	
 	string c11 = "";
@@ -501,14 +501,68 @@ string SelectionManager::GetInit(int length)
 	Revisited(0, 24, 0);
 	PaintSnakeEasy(24,56); 	
 	PrintString(12,2, "Congratulations, you have achived a highscore. Please enter your initials:");
-	return(GetInitials(length,14,2,RR,BB)); 
+	return(GetInitials(length,14,2,RR,BB, false)); 
 }
 void SelectionManager::AdminSettings(Security &scores)
+{
+	EraseAll(); 
+	int input; 
+	bool difFlag = false; 
+	int position_temp = 1;
+	SetColor(true, RR); 
+	PrintSecurityOptionScreen(); 		
+	SetColor(false, RR); 
+	Revisited(0,29,0); 
+	UpdateTerminal();
+	PrintSecSelection(position_temp); 
+	while(!difFlag)
+	{
+		input = KeyPress(); 
+		if(input == 's' || input == KEY_DOWN)
+		{
+			if(position_temp <2)
+			{
+				position_temp ++; 
+				PrintSecSelection(position_temp); 
+			}
+
+		}
+		if(input == 'w' || input == KEY_DOWN)
+		{
+			if(position_temp >1)
+			{
+				position_temp --; 
+				PrintSecSelection(position_temp); 
+			}
+		}
+		if(input == '\n')
+		{
+			EraseAll(); 
+			difFlag = true;
+		       	if(position_temp == 1) 
+			{
+				SecurityProfile(scores); 
+			}	
+			else if(position_temp == 2) 
+			{
+				scores.setPassword(SetPassword(false));
+			}
+		}
+		if(input == 'q')
+		{
+			difFlag = true; 
+		}
+		UpdateTerminal();
+	}
+	EraseAll(); 
+}
+void SelectionManager::SecurityProfile(Security &scores) 
 {
 	int y = 24;
 	EraseAll(); 
 	AdminScreen(); 
 	UpdateTerminal();
+///Security profile from here on out. 
 	string initials; 
 	PrintBox(y-2,0,32,8,32,8,RR,WW,false,true); 
 	bool enterFlag = false;
@@ -521,7 +575,7 @@ void SelectionManager::AdminSettings(Security &scores)
 	//	input = KeyPress(); 
 		if(position == 1)
 		{
-			string addDel = GetInitials(1,y,2,RR,WW);
+			string addDel = GetInitials(1,y,2,RR,WW, false);
 			if(addDel == "A")
 			{	
 				PrintString(y+10,2,"                                                                         "); 
@@ -530,7 +584,7 @@ void SelectionManager::AdminSettings(Security &scores)
 				SetColor(true, RR); 
 				PrintMultiChars(":",y,8);
 				SetColor(false, RR); 	
-				initials = GetInitials(3,y,13,RR,WW); 
+				initials = GetInitials(3,y,13,RR,WW, false); 
 				position++; 
 			}
 			else if(addDel == "D")
@@ -541,7 +595,7 @@ void SelectionManager::AdminSettings(Security &scores)
 				SetColor(true, RR); 
 				PrintMultiChars(":",y,8);
 				SetColor(false, RR); 	
-				initials = GetInitials(3,y,13,RR,WW); 
+				initials = GetInitials(3,y,13,RR,WW, false); 
 				position++; 
 			}
 			else if(addDel == "Q")
@@ -1013,6 +1067,49 @@ string SelectionManager::menuSelection(Settings &myGame, string *names, int *sco
 	
 	//Print the main menu and return a string option. 
 	return selection;
+}
+bool SelectionManager::PasswordInput(string password)
+{
+	EraseAll(); 
+	bool enterFlag = false; 
+	bool passed = false;
+	int y = 14;
+	string passCheck; 
+	PrintSnakeHeader(); 
+	PrintString(y,2, "Please enter a password: :"); 
+	UpdateTerminal(); 
+	while(!enterFlag)
+	{
+		passCheck = GetInitials(8,y+5,2, RR, BB, true); 
+		enterFlag = true; 
+	}
+	if(passCheck == password)
+	{
+		passed = true; 
+	}
+	return passed; 
+}
+string SelectionManager::SetPassword(bool newcheck)
+{
+	EraseAll(); 
+	int y = 10;
+	bool enterFlag = false; 
+	string passCheck = "";
+	PrintSnakeHeader(); 
+	if(newcheck)
+	{
+		PrintString(y,2, "It looks like this is the first time you've played this game."); 
+	}
+	PrintString(y+2, 2, "Please enter a password for future use");
+       	PrintString(y+3,2,"~Letters only~"); 	
+	UpdateTerminal(); 
+	while(!enterFlag)
+	{
+		passCheck = GetInitials(8,y+7,2, RR, BB, true);
+	       	enterFlag = true; 	
+	}
+	return passCheck; 
+	
 }
 void SelectionManager::HighLightSelection(int _boarder, int _fill, int position, Settings &myGame, int maxPosi, bool color)
 { 

@@ -190,8 +190,40 @@ class StateManager
 			}
 			else if(option == "admin")
 			{
+				bool check = false; 
 				SelectionManager select; 
-				select.AdminSettings(scores); 
+				string pw = scores.getPassword();
+				if(pw != "")
+				{
+					//Ask for password 
+					check = select.PasswordInput(pw); 
+				}
+				else
+				{
+					check = true; 
+					scores.setPassword(select.SetPassword(true)); 
+					//Set Password
+				}
+				if(check == true)
+				{
+					select.AdminSettings(scores); 
+				}
+				else 
+				{
+					int temp = -1; 
+					//PasswordFailed 
+					terminal.Blink(true); 
+					terminal.PrintMultiChars("WRONG!,YOU,SUCK",25,2); 
+					terminal.Blink(false); 
+					terminal.PrintString(30,2, "Just kidding! It happens to everyone. We're still not letting you in."); 
+					terminal.PrintString(32,2, "Select Enter to return to the main menu"); 
+					terminal.UpdateTerminal(); 	
+					while(temp == -1)
+					{
+						temp = terminal.KeyPress(); 
+					}
+					terminal.EraseAll(); 
+				}
 			}
 			if(input == 'q')
 			{

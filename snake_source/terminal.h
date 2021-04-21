@@ -46,6 +46,7 @@ class Terminal: public Letters
 	//string* StringToInt(int*value, int count);//TODO release resources on function call. 
 	void PrintString(int y, int x, string String);
 	void EraseAll();
+	void Blink(bool blink);
 };
 #endif 
 

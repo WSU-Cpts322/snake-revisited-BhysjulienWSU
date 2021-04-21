@@ -644,12 +644,31 @@ class Letters
 			return width; 
 	
 		}
+		int LetterStar(int y, int x) 
+		{
+			int width = 5;
+			string line1 = "X";
+			string line2 = "XXX";
+			string line3 = "XXXXX";
+			PrintString(y,x+2,line1);
+			PrintString(y+4,x+2,line1);
+			PrintString(y+3,x+1,line2);
+			PrintString(y+1,x+1,line2);
+			PrintString(y+2,x,line3);
+			return width;
+
+		}
 		
 		
-	public: 
+	public:
+	       	
 		void PrintString(int y, int x, string String)
 		{	
   			mvprintw(y,x, String.c_str()); 
+		}
+		int pubLetterStar(int y, int x) 
+		{
+			return LetterStar(y, x); 
 		}
 		int pubUnderScore(int y, int x) 
 		{
@@ -838,6 +857,9 @@ class Letters
 			{
 				switch (parsed[j])
 				{
+					case '*':
+						x = x + pubLetterStar(y, x)+1; 
+					        break; 	
 					case '_':
 						x = x + pubUnderScore(y,x) + 1; 
 						break; 

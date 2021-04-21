@@ -103,6 +103,8 @@ void GameManager::FruitMatch(Fruit &fruit, Settings &myGame, GameMap &terminal, 
 {
 	int check = 0;
 	bool check2 = true;
+	bool check3 = true;
+	bool check4 = true;
 	int gameMultipliertemp;
 	if(snakePower)
 	{
@@ -113,11 +115,13 @@ void GameManager::FruitMatch(Fruit &fruit, Settings &myGame, GameMap &terminal, 
 		gameMultipliertemp = gameMultiplier; 
 	}
 
-	while(check == 0 || check2 == true)
+	while(check == 0 || check2 == true || check3 == true || check4 == true)
 	{
 		fruit.setFruit(fruit.getY(), fruit.getX()); 
 		check = mvinch(fruit.getY(), fruit.getX()) & A_COLOR;//Make sure we're printing on red space. 
 		check2 = SpaceCheck(fruit.getY(), fruit.getX(),terminal,'X'); 
+		check3 = SpaceCheck(fruit.getY(), fruit.getX(),terminal,'O'); 
+		check4 = SpaceCheck(fruit.getY(), fruit.getX(),terminal,'o'); 
 	}
 	string fruitChar = "@";
 	score = score + baseScore*gameMultipliertemp;  
@@ -246,11 +250,14 @@ void GameManager::GameSetup(GameMap &terminal, Settings &myGame, Snake &snake, B
 }
 void GameManager::PrintFruit(Fruit *fruit, GameMap &terminal)
 {
+//	terminal.Blink(true); 
 	for(int i = 0; i<fruitCount; i++)
 	{
 		terminal.PrintString(fruit[i].getY(), fruit[i].getX(), fruitChar); 
 		//mvprintw(fruit[i].getFruitY(),fruit[i].getFruitX(), fruitChar.c_str());
 	}
+	terminal.UpdateTerminal(); 
+//	terminal.Blink(false);	
 }
 //Control start position of badSnakes. 
 void GameManager::BadAttack(Settings &myGame, BadSnake &badSnake, bool &badSnakeX, bool &badSnakeY) //TODO CAN'T GET THE RANDOM NUMBERS TO WORK CORRECTLY> 
@@ -361,18 +368,21 @@ int GameManager::PlayGame(Settings &myGame)
 			snake.UpdatePosition();
 			if(check)
 			{
+				bool grow = true; 
 				bool gameFlag = true; 
 				for(int i = 0; i<fruitCount; i++)
 				{
-					if(fruit[i].getY() == snake.getY() && fruit[i].getX() == snake.getX()) //Then the snake has eaten a fruit
+					if(fruit[i].getY() == snake.getY() && fruit[i].getX() == snake.getX() && grow == true) //Then the snake has eaten a fruit
 					{	
-						if(fruit[i].GetPower() && myGame.GetGameType(1) == 2)
+						if(fruit[i].GetPower() && myGame.GetGameType(1) == 2&& grow == true)
 						{
 							snake.SetPower(true); 
+							grow = false; 
 						}
-						else
+						else if(!snake.GetPower())
 						{
 							snake.incLength();
+							grow = false; 
 						}
 						FruitMatch(fruit[i], myGame,terminal, snake.GetPower()); 
 				 
@@ -388,7 +398,8 @@ int GameManager::PlayGame(Settings &myGame)
 			terminal.SetColor(true, myGame.GetSecondColor()); 
 			powerTimer = powerTimer + TIMERSET/myGame.GetGameSize()*3; 
 		}
-		mvprintw(snake.getY(),snake.getX(), snake_Head.c_str()); //Print Snake head. 
+		terminal.PrintString(snake.getY(), snake.getX(), snake_Head); 
+		//mvprintw(snake.getY(),snake.getX(), snake_Head.c_str()); //Print Snake head. 
 		for(int y =0; y<snake.GetLength(); y++)//Move printing out of this class. 
 		{
 			if(snake.getyTail(y) != 0 || snake.getxTail(y) != 0) //Then the tail isn't been assigned yet. 

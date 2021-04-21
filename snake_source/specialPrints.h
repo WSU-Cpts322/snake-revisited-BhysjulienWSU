@@ -13,6 +13,7 @@ class SpecialPrint: public Terminal
 	string gameSize = "Medium"; 
 	void PrintSnake(int y);
 	bool printExplode(int count, int y, int x);
+	void PrintKey(int y); 
 
 	/////TODO REMOVE! Legacy Code! 
 	void PrintSnakeOptions();
@@ -39,6 +40,8 @@ class SpecialPrint: public Terminal
 	void PrintOptions(int selection);
 	public:	
 	
+	void PrintSecurityOptionScreen();
+	void PrintSecSelection(int selection); 	
 	int GetNumbers(bool &myG, int y, int x, int color, int color2); 
 	void PrintSnakeHeader();
 	void PrintCustomSizeScreen();
@@ -60,7 +63,7 @@ class SpecialPrint: public Terminal
 	string PrintSizeSelection(int selection);
 	string PrintDifficultySelection(int selection);
 	void PrintColorSelection(int selection);
-	string GetInitials(int length, int y, int x, int color, int color2);//TODO This probably sshould be moved to selection manager. Taking input and printing. To much function for sinle method. 
+	string GetInitials(int length, int y, int x, int color, int color2, bool pw);//TODO This probably sshould be moved to selection manager. Taking input and printing. To much function for sinle method. 
 	void PrintSelected(int selection, int clear);
 	bool PrintdRev();
 	void PrintCurrentSettings(string gameS, string gameTypeString, string difficultyString, int mult, int x, int y);

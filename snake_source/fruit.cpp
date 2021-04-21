@@ -9,6 +9,7 @@ Fruit::Fruit(int _width, int _height)
 //returns Y position of current fruit
 void Fruit::setFruit(int y, int x)
 {
+//	srand(time(NULL));
 	bool flag = true; 
 	setY(1 + (rand() % height-2));//-2 to stay inside boarders. 
 	setX(1 + (rand() % width-2));

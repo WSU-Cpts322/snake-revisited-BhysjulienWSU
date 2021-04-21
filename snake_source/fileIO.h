@@ -10,7 +10,8 @@ using namespace std;
 class FileIO
 {
 	private:
-
+		string password = "";
+		int passwordLen; 
 		int scores[6][11] = {0};
 		string names[6][11];
 		void ReadSecurity(string fileName);
@@ -38,6 +39,9 @@ class FileIO
 		void SwapName(string &posA, string &posB);
 		string getSecBlock(int index); 
 		void setSecBlock(int index, string initials); 
+		string getPassword();
+		void setPassword(string token); 
+		int getPasswordLen();
 };
 
 

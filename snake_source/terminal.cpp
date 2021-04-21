@@ -914,7 +914,13 @@ void Terminal::PrintBox(int topLeftY, int topLeftX, int wDiv, int hDiv, int widt
 	}
 			
 }
-
+void Terminal::Blink(bool blink)
+{
+	if(blink)
+		attron(A_BLINK); 
+	else
+		attroff(A_BLINK); 
+}
 void Terminal::Clear(int rows)
 {
 	string clear        = "                                       ";
