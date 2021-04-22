@@ -52,3 +52,4 @@ The time period for which the score is doubled is different based on map size. I
 Once a user has met an end game condition, the game engine will evaluate whether or not the user achieved a high score for their given difficulty.
 If the user did achieve a high score, they will be allowed to enter their initials as long as their initials are not on the security profile.
 
+***Note: turn on Mobaxterm sound for the awesome sound effects available in snake revised. 

@@ -106,16 +106,17 @@ void GameManager::FruitMatch(Fruit *fruit, Settings &myGame, GameMap &terminal, 
 	bool check3 = true;
 	bool check4 = true;
 	int gameMultipliertemp;
+	beep(); 
 	if(snakePower)
 	{
-		gameMultipliertemp = gameMultiplier*2; 
+		gameMultipliertemp = gameMultiplier*4; 
 	}
 	else 
 	{
 		gameMultipliertemp = gameMultiplier; 
 	}
 
-	while(check == 0 || check2 == true || check3 == true || check4 == true)
+	while(check == 0 || check2 == true || check3 == true || check4 == true) //Check to make sure future fruit isn't on snake 
 	{
 		fruit->setFruit(fruit->getY(), fruit->getX()); 
 		check = mvinch(fruit->getY(), fruit->getX()) & A_COLOR;//Make sure we're printing on red space. 
@@ -123,7 +124,7 @@ void GameManager::FruitMatch(Fruit *fruit, Settings &myGame, GameMap &terminal, 
 		check3 = SpaceCheck(fruit->getY(), fruit->getX(),terminal,'O'); 
 		check4 = SpaceCheck(fruit->getY(), fruit->getX(),terminal,'o'); 
 	}
-	string fruitChar = "@";
+	string fruitChar = "@"; //Fruit char
 	score = score + baseScore*gameMultipliertemp;  
 	//TODO Move printing score out of this function. It doesn't make sense here. 
 	string scoreTemp = "Score: " + to_string(score);  
@@ -345,9 +346,11 @@ int GameManager::PlayGame(Settings &myGame)
 		int temp_input = terminal.KeyPress();
 		if(temp_input == 'a' || temp_input == 'd' || temp_input == 'w' || temp_input == 's' || temp_input ==  KEY_DOWN || temp_input ==  KEY_UP || temp_input ==  KEY_LEFT || temp_input ==  KEY_RIGHT)
 		{
-			input = temp_input; 	
-			count++; 
-			pause = false; 
+			if(!pause) 
+			{
+				input = temp_input; 	
+				count++; 
+			}
 		}
 		else if(temp_input == 'q')
 		{
@@ -357,8 +360,12 @@ int GameManager::PlayGame(Settings &myGame)
 		{
 			if(pause == false)
 				pause = true; 
-			else 
+			else
+			{	
 				pause = false;
+				terminal.PrintBoard(myGame.GetGameType(), myGame.GetWidth(), myGame.GetHeight()); //myGame.GetCurrentColor()); 
+				terminal.UpdateTerminal(); 
+			}
 		}
 		if(myGame.GetGameType(1) == 2 && !pause)//It gets messy with newSchool. 
 			count = SnakeAttack(count, attackNumMove, badSnake, myGame, terminal); //Call main function for controlling attacking snakes. 
@@ -371,74 +378,76 @@ int GameManager::PlayGame(Settings &myGame)
 			{
 				mvprintw(snake.getFinYTail(),snake.getFinXTail(), space.c_str()); 
 			}
-		ChangeDirection(snake, input, myGame, delay);
-		if(input == 'a' || input == 'd' || input == 'w' || input == 's' || input == 2 || input == 3 || input == 4 || input == 5)
-		{
-			check = Compare(snake.getY(), snake.getX(), snake.getDirect(), terminal, snake); 
-			snake.UpdatePosition();
-			if(check)
+			ChangeDirection(snake, input, myGame, delay);
+			if(input == 'a' || input == 'd' || input == 'w' || input == 's' || input == 2 || input == 3 || input == 4 || input == 5)
 			{
-				bool grow = true; 
-				bool gameFlag = true; 
-				for(int i = 0; i<fruitCount; i++)
+				check = Compare(snake.getY(), snake.getX(), snake.getDirect(), terminal, snake); 
+				snake.UpdatePosition();
+				if(check)
 				{
-					if(fruit[i].getY() == snake.getY() && fruit[i].getX() == snake.getX() && grow == true) //Then the snake has eaten a fruit
-					{	
-						if(fruit[i].GetPower() && myGame.GetGameType(1) == 2&& grow == true)
-						{
-							snake.SetPower(true); 
-							grow = false; 
+					bool grow = true; 
+					bool gameFlag = true; 
+					for(int i = 0; i<fruitCount; i++)
+					{
+						if(fruit[i].getY() == snake.getY() && fruit[i].getX() == snake.getX() && grow == true) //Then the snake has eaten a fruit
+						{	
+							if(fruit[i].GetPower() && myGame.GetGameType(1) == 2&& grow == true)
+							{
+								snake.SetPower(true); 
+								grow = false; 
+							}
+							else if(!snake.GetPower())
+							{
+								snake.incLength();
+								grow = false; 
+							}
+							FruitMatch(&fruit[i], myGame,terminal, snake.GetPower()); 
+					 
+							gameFlag = false;
 						}
-						else if(!snake.GetPower())
-						{
-							snake.incLength();
-							grow = false; 
-						}
-						FruitMatch(&fruit[i], myGame,terminal, snake.GetPower()); 
-				 
-						gameFlag = false;
 					}
+					myGame.SetGameOver(gameFlag);//What was matched wasn't a fruit, game over. 
 				}
-				myGame.SetGameOver(gameFlag);//What was matched wasn't a fruit, game over. 
+					
 			}
-				
-		}
-		if(snake.GetPower())
-		{
-			terminal.SetColor(true, myGame.GetSecondColor()); 
-			powerTimer = powerTimer + TIMERSET/myGame.GetGameSize()*3;
-		       	terminal.Blink(true); 	
-		}
-		terminal.PrintString(snake.getY(), snake.getX(), snake_Head); 
-		bool blinkers = true; 
-		for(int y =0; y<snake.GetLength(); y++)//Move printing out of this class. 
-		{	
 			if(snake.GetPower())
-				terminal.Blink(blinkers); 
-			if(snake.getyTail(y) != 0 || snake.getxTail(y) != 0) //Then the tail isn't been assigned yet. 
 			{
-				mvprintw(snake.getyTail(y),snake.getxTail(y), snake_tail.c_str());
+				terminal.SetColor(true, myGame.GetSecondColor()); 
+				powerTimer = powerTimer + TIMERSET/myGame.GetGameSize()*3;
+			       	terminal.Blink(true); 	
 			}
+			terminal.PrintString(snake.getY(), snake.getX(), snake_Head); 
+			bool blinkers = true; 
+			for(int y =0; y<snake.GetLength(); y++)//Move printing out of this class. 
+			{	
+				if(snake.GetPower())
+					terminal.Blink(blinkers); 
+				if(snake.getyTail(y) != 0 || snake.getxTail(y) != 0) //Then the tail isn't been assigned yet. 
+				{
+					mvprintw(snake.getyTail(y),snake.getxTail(y), snake_tail.c_str());
+				}
+			}
+			terminal.Blink(false); 
+			if(snake.GetPower())
+			{
+				terminal.SetColor(false, myGame.GetSecondColor()); 
+			}
+			if(powerTimer > 120)
+			{
+				snake.SetPower(false);
+				powerTimer = 0;	
+			}	
+			terminal.SetColor(true, myGame.GetPrimColor()); 
+			terminal.UpdateTerminal();
+			napms(delay);
+			if(myGame.GetGameType(1) == 1)
+				PrintFruit(fruit,terminal,false);
+			else		
+				PrintFruit(fruit,terminal, true); 
+			terminal.SetColor(false, myGame.GetPrimColor()); 
 		}
-		terminal.Blink(false); 
-		if(snake.GetPower())
-		{
-			terminal.SetColor(false, myGame.GetSecondColor()); 
-		}
-		if(powerTimer > 120)
-		{
-			snake.SetPower(false);
-			powerTimer = 0;	
-		}	
-		terminal.SetColor(true, myGame.GetPrimColor()); 
-		terminal.UpdateTerminal();
-		napms(delay);
-		if(myGame.GetGameType(1) == 1)
-			PrintFruit(fruit,terminal,false);
-		else		
-			PrintFruit(fruit,terminal, true); 
-		terminal.SetColor(false, myGame.GetPrimColor()); 
-		}
+		else
+			terminal.PrintMultiChars("PAUSED",3,3);
 	}
 
 	myGame.SetQuitGame(false);
