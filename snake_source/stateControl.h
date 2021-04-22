@@ -69,7 +69,7 @@ class StateManager
 	StateManager()
 	{
 		myGame.SetPrimColor(BW);
-		myGame.SetSecondColor(BLBL); 
+		myGame.SetSecondColor(WBL); 
 		scores.ReadStart("scores"); 
 		scores.ReadStart("security"); 
 		scores.GetHighScores(scoresNum, names); 

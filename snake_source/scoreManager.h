@@ -30,14 +30,11 @@ class ScoreKeeper: public FileIO
 
 	public:
 		ScoreKeeper();
-		bool SecurityCheck(string intials); 
-		void GetHighScores(int *hscores, string *hnames); 
-		//void ReadFile(string fileName); 
+		bool SecurityCheck(string intials);//Checks if the score can be assigned to high scores  
+		void GetHighScores(int *hscores, string *hnames); //returns all hig hscores and names. 
 		bool HighScoreCheck(int check, int newSchool, string gameDif); 
 		void AssignScore(string intials); //Only takes a string and assigns it if a high score has been detected. 
 		int GetScore(int index, int GameType, string& initials); 	
-	//	void PublicWrite(string type); 
-	//	void ReadStart(string fileName); 
 		int* GetArrayScore(int type);
 		string* GetNames(int GameType);
 };

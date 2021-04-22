@@ -10,7 +10,7 @@ int main()
     noecho();
     scrollok(stdscr, TRUE);
     nodelay(stdscr, TRUE);
-
+    keypad(stdscr, TRUE);
 
     int i = 0;
 
@@ -18,7 +18,6 @@ int main()
     {
 	char c = getch();
 	int  delay = 100;	
-
 	printw("------------------\n");
 	for(int j = 0; j < 10; j++)
 	{

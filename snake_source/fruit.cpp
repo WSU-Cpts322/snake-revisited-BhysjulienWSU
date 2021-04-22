@@ -5,6 +5,8 @@ Fruit::Fruit(int _width, int _height)
 {
 	width = _width;
 	height = _height;
+	setY(0);
+	setX(0);
 }
 //returns Y position of current fruit
 void Fruit::setFruit(int y, int x)
@@ -48,5 +50,8 @@ void Fruit::DeterminePower()
 	{
 		SetPower(false); 
 	}
+}
+Fruit::Fruit()
+{
 }
 

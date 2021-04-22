@@ -76,6 +76,12 @@ Snake::Snake(int width, int height)
 	setY(height/2);
 	Snake_Length = 0;
 	power = false; 
+	for(int i = 0;i<1000;i++)
+	{
+		snake_tail_x[i] = 0;
+		snake_tail_y[i] = 0;
+	}
+
 }
 //Snake::Snake(int width, int height, int length)
 //{
@@ -88,7 +94,15 @@ void Snake::SetLength(int length)
 	Snake_Length = length;
 }
 
-Snake::Snake(){}
+Snake::Snake(){
+
+	for(int i = 0;i<1000;i++)
+	{
+		snake_tail_x[i] = 0;
+		snake_tail_y[i] = 0;
+	}
+
+}
 int Snake::getFinYTail()
 {
 	int tempY;

@@ -52,7 +52,8 @@ bool Security::SecurityCheck(string intials)
 	int i =0;
 	while(getSecBlock(i) != "" && i < 100)
 	{
-		if(getSecBlock(i) == intials)
+		string tempstr = getSecBlock(i); 
+		if(tempstr == intials)
 			check = true;
 		i++;
 		if(i == 100) break; 

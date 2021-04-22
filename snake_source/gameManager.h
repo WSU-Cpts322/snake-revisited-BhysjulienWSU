@@ -34,18 +34,18 @@ class GameManager
 		BadSnake* badSnake; 
 		Fruit* fruit;
 		//Setup basic game variables 
-		bool SpaceCheck(int y, int x, GameMap &terminal, char checkChar);
-		bool Compare(int y, int x, int direction, GameMap &terminal, Snake sanke);
-		void ChangeDirection(Snake &snake, int input, Settings &myGame, int delay);
-		void FruitMatch(Fruit &fruit, Settings &myGame, GameMap &terminal,  bool snakePower);
-		int SnakeAttack(int count, int &attackNumMove, BadSnake *badSnake, Settings &myGame, GameMap &terminal);
-		void GameSetup(GameMap &terminal, Settings &myGame, Snake &snake, BadSnake *badSnake, Fruit *fruit); 
-		void PrintFruit(Fruit *fruit, GameMap &terminal);
+		bool SpaceCheck(int y, int x, GameMap &terminal, char checkChar); //Simple check. Mostly used for turning badsnake off and on. 
+		bool Compare(int y, int x, int direction, GameMap &terminal, Snake sanke); //Checks if there is a collision of good snake 
+		void ChangeDirection(Snake &snake, int input, Settings &myGame, int delay); //Local function to check for change of direction conditions. 
+		void FruitMatch(Fruit *fruit, Settings &myGame, GameMap &terminal,  bool snakePower); //Handles if there ia fruit match and the needed logic. 
+		int SnakeAttack(int count, int &attackNumMove, BadSnake *badSnake, Settings &myGame, GameMap &terminal); //Updates a position for attack Snake. 
+		void GameSetup(GameMap &terminal, Settings &myGame, Snake &snake, BadSnake *badSnake, Fruit *fruit); //Sets up all game objects and positions
+		void PrintFruit(Fruit *fruit, GameMap &terminal, bool gametype); //Private function for handling the printing of all static fruit positions 
 		void BadAttack(Settings &myGame, BadSnake &badSnake, bool &badSnakeX, bool &badSnakeY); //TODO CAN'T GET THE RANDOM NUMBERS TO WORK CORRECTLY> 
 	public: 
-		GameManager(int _height, int _width, int _gameMultiplier, string _snakeHead, int _fruitCount, int _delay);
+		GameManager(int _height, int _width, int _gameMultiplier, string _snakeHead, int _fruitCount, int _delay);  
 		~GameManager();
-		int PlayGame(Settings &myGame);
+		int PlayGame(Settings &myGame); //handles the core logic functions ofthe gameplay. This is consider the game engine. 
 
 };
 #endif

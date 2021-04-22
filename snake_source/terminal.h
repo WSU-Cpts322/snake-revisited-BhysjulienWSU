@@ -32,20 +32,20 @@ class Terminal: public Letters
 	public:
 	Terminal();
 	~Terminal();
-	void SetColor(bool color, int colorNum);
- 	int SetCustomColor(string color, bool primary, bool assign);
-	int KeyPress();
-	void printString(int y, int x, string str);
-	void ClearTerminal();
+	void SetColor(bool color, int colorNum); //Set the actual color being printed (vs the global color settings). 
+ 	int SetCustomColor(string color, bool primary, bool assign); 
+	int KeyPress(); //Take input 
+	void printString(int y, int x, string str);//Prints a simple string. 
+	void ClearTerminal(); //Clears the current screen.
 	void UpdateTerminal();
 	int GetCurrentPrimaryColor(); //Artifact 
 	int GetCurrentSecondColor();  //Artifact 
-	void ChangeColor(int colorChangeOne, int colorChangeTwo);
-	void PrintBox(int topLeftY, int topLeftX, int wDiv, int hDiv, int width, int height, int colorBoarder, int colorFill, bool divide, bool fill);
-	void Clear(int rows);
+	void ChangeColor(int colorChangeOne, int colorChangeTwo); //Changes the global color settings. 
+	void PrintBox(int topLeftY, int topLeftX, int wDiv, int hDiv, int width, int height, int colorBoarder, int colorFill, bool divide, bool fill); //Simple function toe print box. Can print boarders only, or infill, or can be scaled.
+	void Clear(int rows); //Clear specific number of rows
 	//string* StringToInt(int*value, int count);//TODO release resources on function call. 
-	void PrintString(int y, int x, string String);
-	void EraseAll();
+	void PrintString(int y, int x, string String); //Print a nucurses string. 
+	void EraseAll(); //Clear entire terminal and all screans.  
 	void Blink(bool blink);
 };
 #endif 

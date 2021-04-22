@@ -99,7 +99,7 @@ void GameManager::ChangeDirection(Snake &snake, int input, Settings &myGame, int
 	}
 	
 }
-void GameManager::FruitMatch(Fruit &fruit, Settings &myGame, GameMap &terminal,  bool snakePower)
+void GameManager::FruitMatch(Fruit *fruit, Settings &myGame, GameMap &terminal,  bool snakePower)
 {
 	int check = 0;
 	bool check2 = true;
@@ -117,11 +117,11 @@ void GameManager::FruitMatch(Fruit &fruit, Settings &myGame, GameMap &terminal, 
 
 	while(check == 0 || check2 == true || check3 == true || check4 == true)
 	{
-		fruit.setFruit(fruit.getY(), fruit.getX()); 
-		check = mvinch(fruit.getY(), fruit.getX()) & A_COLOR;//Make sure we're printing on red space. 
-		check2 = SpaceCheck(fruit.getY(), fruit.getX(),terminal,'X'); 
-		check3 = SpaceCheck(fruit.getY(), fruit.getX(),terminal,'O'); 
-		check4 = SpaceCheck(fruit.getY(), fruit.getX(),terminal,'o'); 
+		fruit->setFruit(fruit->getY(), fruit->getX()); 
+		check = mvinch(fruit->getY(), fruit->getX()) & A_COLOR;//Make sure we're printing on red space. 
+		check2 = SpaceCheck(fruit->getY(), fruit->getX(),terminal,'X'); 
+		check3 = SpaceCheck(fruit->getY(), fruit->getX(),terminal,'O'); 
+		check4 = SpaceCheck(fruit->getY(), fruit->getX(),terminal,'o'); 
 	}
 	string fruitChar = "@";
 	score = score + baseScore*gameMultipliertemp;  
@@ -231,8 +231,6 @@ void GameManager::GameSetup(GameMap &terminal, Settings &myGame, Snake &snake, B
 		badSnake[i] = BadSnake(height, width, 4); //Make this a 
 		BadAttack(myGame, badSnake[i],badSnakeX ,badSnakeY); 
 	}
-	//Snake badSnake [3](myGame.GetHeight(), myGame.GetWidth(), 2); 
-	//Pass it at a coordinate that it can't be at.
 
 	for(int i = 0; i<fruitCount; i++)
 	{
@@ -245,16 +243,26 @@ void GameManager::GameSetup(GameMap &terminal, Settings &myGame, Snake &snake, B
 			check2 = SpaceCheck(fruit[i].getY(), fruit[i].getX(),terminal, 'X'); 
 		}
 	}
-	PrintFruit(fruit, terminal);
+	if(myGame.GetGameType(1) == 1)
+		PrintFruit(fruit,terminal,false);
+	else		
+		PrintFruit(fruit,terminal, true); 
 	terminal.SetColor(false, myGame.GetPrimColor());
 }
-void GameManager::PrintFruit(Fruit *fruit, GameMap &terminal)
+void GameManager::PrintFruit(Fruit *fruit, GameMap &terminal, bool gametype)
 {
-//	terminal.Blink(true); 
 	for(int i = 0; i<fruitCount; i++)
 	{
+		if(fruit[i].GetPower() && gametype == true)
+		{ 
+			terminal.Blink(true); 
+		}
 		terminal.PrintString(fruit[i].getY(), fruit[i].getX(), fruitChar); 
 		//mvprintw(fruit[i].getFruitY(),fruit[i].getFruitX(), fruitChar.c_str());
+		if(fruit[i].GetPower() && gametype == true)
+		{ 
+			terminal.Blink(false); 
+		}
 	}
 	terminal.UpdateTerminal(); 
 //	terminal.Blink(false);	
@@ -268,6 +276,7 @@ void GameManager::BadAttack(Settings &myGame, BadSnake &badSnake, bool &badSnake
 	{
 		badSnake.SetBool(i,false); 
 	}
+	//Rotates the side ofthe map for which the bad snakes start 
 	if(badSnakeX == false && badSnakeY == false)
 	{
 		badSnakeX = true;
@@ -322,8 +331,9 @@ int GameManager::PlayGame(Settings &myGame)
 	GameMap terminal;
 	terminal.SetColor(myGame.GetPrimColor(), myGame.GetSecondColor()); 	
 	Snake snake(width,height);
+	snake.SetLength(5);
 	badSnake = (BadSnake*)malloc(sizeof(BadSnake)*numOfSnakes);//Make number of Snakes a variable for constructor. More snakes on Hard. 
-	fruit= (Fruit*)malloc(sizeof(Snake)*fruitCount); (myGame.GetWidth(),myGame.GetHeight());
+	fruit= (Fruit*)malloc(sizeof(Snake)*fruitCount);//(myGame.GetWidth(),myGame.GetHeight());
 	GameSetup(terminal, myGame, snake, badSnake, fruit); 
 	int powerTimer = 0; 
 	char input = 'i';
@@ -384,7 +394,7 @@ int GameManager::PlayGame(Settings &myGame)
 							snake.incLength();
 							grow = false; 
 						}
-						FruitMatch(fruit[i], myGame,terminal, snake.GetPower()); 
+						FruitMatch(&fruit[i], myGame,terminal, snake.GetPower()); 
 				 
 						gameFlag = false;
 					}
@@ -396,18 +406,21 @@ int GameManager::PlayGame(Settings &myGame)
 		if(snake.GetPower())
 		{
 			terminal.SetColor(true, myGame.GetSecondColor()); 
-			powerTimer = powerTimer + TIMERSET/myGame.GetGameSize()*3; 
+			powerTimer = powerTimer + TIMERSET/myGame.GetGameSize()*3;
+		       	terminal.Blink(true); 	
 		}
 		terminal.PrintString(snake.getY(), snake.getX(), snake_Head); 
-		//mvprintw(snake.getY(),snake.getX(), snake_Head.c_str()); //Print Snake head. 
+		bool blinkers = true; 
 		for(int y =0; y<snake.GetLength(); y++)//Move printing out of this class. 
-		{
+		{	
+			if(snake.GetPower())
+				terminal.Blink(blinkers); 
 			if(snake.getyTail(y) != 0 || snake.getxTail(y) != 0) //Then the tail isn't been assigned yet. 
 			{
 				mvprintw(snake.getyTail(y),snake.getxTail(y), snake_tail.c_str());
 			}
-			
 		}
+		terminal.Blink(false); 
 		if(snake.GetPower())
 		{
 			terminal.SetColor(false, myGame.GetSecondColor()); 
@@ -420,7 +433,10 @@ int GameManager::PlayGame(Settings &myGame)
 		terminal.SetColor(true, myGame.GetPrimColor()); 
 		terminal.UpdateTerminal();
 		napms(delay);
-		PrintFruit(fruit,terminal); 
+		if(myGame.GetGameType(1) == 1)
+			PrintFruit(fruit,terminal,false);
+		else		
+			PrintFruit(fruit,terminal, true); 
 		terminal.SetColor(false, myGame.GetPrimColor()); 
 		}
 	}

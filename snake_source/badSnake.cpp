@@ -6,6 +6,13 @@ BadSnake::BadSnake(int width, int height, int length)
 	setX(2+(rand() %(width-2)));
 	setY(1);
 	SetLength(length); 
+	for(int i = 0;i<1000;i++)
+	{
+		snake_bool[i] = false;
+	       		
+	}
+	SnakeHead_bool = false; 
+
 }
 void BadSnake::SetBool(int snakePos, bool set)
 {

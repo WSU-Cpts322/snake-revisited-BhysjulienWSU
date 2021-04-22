@@ -249,14 +249,37 @@ void FileIO::ReadFile(string fileName)
 				int j = 0; 
 				while(std::getline(fileIn,readTemp)&& j<100)
 				{
-					if(readTemp.find("password") == std::string::npos)
+					if(readTemp.find("password") == std::string::npos) //Check if it is a password. 
 					{
-						readTemp = ConvertToUp(readTemp); 
-						readTemp.resize(3);
+						readTemp = ConvertToUp(readTemp); //Data error handling. Can't be  more than 3
+					       	if(readTemp.length() > 3)
+					       	{
+							readTemp.resize(3);
+					       	}
+						if(doit) 
+						for(unsigned i = 0; i<readTemp.length(); i++) //decode 
+						{
+							if(i%2 == 0)
+							{
+								readTemp[i] = readTemp[i]-100;
+							}
+							else 
+							{
+								readTemp[i] = readTemp[i] +100;
+							}
+						}
+
+					//	int count = 0; //Make sure there are not white spaces 
+					//	for(int i = 0; readTemp[i]; i++)
+					//	{
+					//		if(readTemp[i] != ' ')
+					//			readTemp[count++] = readTemp [i]; 
+					//	}
+					//	readTemp[count] = '\0'; 
 						securityBlock[j]= readTemp;
 						j++;
 					}
-					else if(readTemp.find("password") != std::string::npos)
+					else if(readTemp.find("password") != std::string::npos) //Read in and decode password. 
 					{
 						string del = " ";
 						readTemp = readTemp.erase(0, readTemp.find(del) + del.length()); 
@@ -294,8 +317,9 @@ void FileIO::PreLoadSecurity()
 {
 	securityBlock[0] = "BLL"; 
 	securityBlock[1] = "ABC"; 
-	securityBlock[3] = "DEF";
-	securityBlock[4] = "BL "; 
+	securityBlock[2] = "DEF";
+	securityBlock[3] = "BL";
+	securityBlock[4] = "B";
 }
 void FileIO::PreLoadTest()
 {
@@ -322,36 +346,33 @@ void FileIO::PublicWrite(string type)
 	{
 		stringstream allScores; 
 		allScores << WriteScores(); 
-//		allScores << "OldEasy";
-//		allScores << "\n" <<WriteScores(oldSchoolEasyName, oldSchoolEasy);//Write all the data to a single string, including newLines.  
-//		allScores << "\nOldHard"; 
-//		allScores << "\n" << WriteScores(oldSchoolHardName, oldSchoolHard); 
-//		allScores << "\nOld2020"; 
-//		allScores << "\n" << WriteScores(oldSchool2020Name, oldSchool2020); 
-//		allScores << "\nNewEasy"; 
-//		allScores << "\n" << WriteScores(newSchoolEasyName, newSchoolEasy); 
-//		allScores << "\nNewHard";
-//		allScores << "\n" << WriteScores(newSchoolHardName, newSchoolHard); 
-//		allScores << "\nNew2020";
-//		allScores << "\n" << WriteScores(newSchool2020Name, newSchool2020); 
 		ofstream fileOut("scores");
-		fileOut << allScores.rdbuf(); 
+		fileOut << allScores.rdbuf(); //Write all scores. 
 		fileOut.close(); 
 	}
-	else if(type == "security")
+	else if(type == "security") //Write all security 
 	{
 		int index =0; 
 		stringstream baddies;
 	       	while(index < 100)
 		{
 			if(securityBlock[index] != "")
-			{	
-				baddies << securityBlock[index];
+			{
+				string temp = securityBlock[index];
+				if(doit)
+				for(unsigned i = 0; i<temp.length(); i++) //Encode 
+				{
+					if(i%2 == 0) 
+						temp[i] = temp[i] +100;
+					else
+						temp[i] = temp[i] -100; 
+				}
+				baddies << temp;//write encoded data
 				baddies << "\n"; 
 			}
 			index++;
 		}
-		if(password != "")
+		if(password != "") //Encode password 
 		{
 			for(unsigned i = 0; i<password.length(); i++)
 			{
@@ -372,7 +393,7 @@ void FileIO::PublicWrite(string type)
 string FileIO::WriteScores()
 {
 	string toWrite; 
-	stringstream toWriteStream; 
+	stringstream toWriteStream; //Ensure data is written in correct order 
 	for(int j = 0; j<6; j++)
 	{
 		if(j==0)

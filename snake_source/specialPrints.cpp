@@ -659,7 +659,7 @@ void SpecialPrint::PrintColorSelection(int selection)
 	}
 	else if(selection == 2)
 	{
-		ChangeColor(CBL,CC);
+		ChangeColor(CBL,BLC);
 		Clear(37); 
 		attron(COLOR_PAIR(CBL)); 
 		PrintSnake(16);
@@ -668,7 +668,7 @@ void SpecialPrint::PrintColorSelection(int selection)
 	}
 	else if(selection ==3)
 	{
-		ChangeColor(RW,RR);
+		ChangeColor(RW,RW);
 		Clear(37); 
 		attron(COLOR_PAIR(RW)); 
 		PrintSnake(22);
@@ -677,7 +677,7 @@ void SpecialPrint::PrintColorSelection(int selection)
 	}
 	else if(selection ==4)
 	{
-		ChangeColor(MC,MM);
+		ChangeColor(MC,CM);
 		Clear(37);
 		attron(COLOR_PAIR(MC)); 
 		PrintSnake(28);	
@@ -686,7 +686,7 @@ void SpecialPrint::PrintColorSelection(int selection)
 	}
 	else if(selection ==5)
 	{
-		ChangeColor(BR,BBL);
+		ChangeColor(BR,RBL);
 		Clear(37);
 		attron(COLOR_PAIR(BR)); 
 		PrintSnake(34);
@@ -822,7 +822,7 @@ string SpecialPrint::GetInitials(int length, int y, int x, int color, int color2
 				i++; 
 			}
 		}
-		if(input == KEY_BACKSPACE) 
+		if(input == KEY_BACKSPACE || input == 8 || input == 127) 
 		{
 			string temp = initials.substr(0,initials.length()-1);
 			initials = temp; 
@@ -938,9 +938,11 @@ bool SpecialPrint::SecurityAlert()
 		i = KeyPress(); 
 		erase(); 
 		PrintSnakeHeader();
+		Blink(true);
 		SetColor(true, RR); 
 		PrintMultiChars("SECURITY,,ALERT!!!", 10,3);
 		SetColor(true, RB); 
+		Blink(false);
 		PrintString(16,2, "SECURITY ALERT: Your initials have been evaluated by the highly advance onboard \"Snake AI.\"");
 		PrintString(17,2,  "Basd on your initals it was determined you are a generaly shady individual and not to be trusted."); 
 		PrintString(18,2, "While we understand you didn't cheat on this game, our AI has determined it is only a matter of time before you do.");  
@@ -966,20 +968,20 @@ void SpecialPrint::MainScreen(string *names, int *scores)
 {
 	PrintSnakeHeader();
 	
-	SetColor(true,GBL); 
+	SetColor(true,GG); 
 	PrintMultiChars("PLAY,GAME", 11,2); 
 	PrintMultiChars("OPTIONS", 11+6,2); 
 	PrintMultiChars("HIGH,SCORES", 11+12,2);
-	SetColor(false, GBL); 
+	SetColor(false, GG); 
 	PrintHighScores(names, scores);
 }
 void SpecialPrint::MainScreen()
 {
-	SetColor(true,GBL); 
+	SetColor(true,GG); 
 	PrintMultiChars("PLAY,GAME", 11,2); 
 	PrintMultiChars("OPTIONS", 11+6,2); 
 	PrintMultiChars("HIGH,SCORES", 11+12,2);
-	SetColor(false, GBL); 
+	SetColor(false, GG); 
 }
 void SpecialPrint::AdminScreen()
 {
@@ -998,13 +1000,13 @@ void SpecialPrint::OptionsScreen(bool header)
 	{
 		PrintSnakeHeader(); 
 	}
-	SetColor(true,GBL); 
+	SetColor(true,GG); 
 	PrintMultiChars("OLD,SCHOOL", 11,2); 
 	PrintMultiChars("NEW,SCHOOL", 11+6,2); 
 	PrintMultiChars("COLOR", 11+12,2); 
 	PrintMultiChars("GAME,SIZE", 11+18,2); 
 	PrintMultiChars("RETURN", 11+24,2); 
-	SetColor(false, GBL); 
+	SetColor(false, GG); 
 }
 void SpecialPrint::DifficultyScreen(bool header)
 {
@@ -1012,12 +1014,12 @@ void SpecialPrint::DifficultyScreen(bool header)
 	{
 		PrintSnakeHeader(); 
 	}
-	SetColor(true,GBL); 
+	SetColor(true,GG); 
 	PrintMultiChars("EASIEST", 11,2); 
 	PrintMultiChars("HARDEST", 11+6,2); 
 	PrintMultiChars("YR,2020", 11+12,2); 
 	PrintString(11+13+4,2,"Warning: For expert players only");	
-	SetColor(false, GBL); 
+	SetColor(false, GG); 
 }
 void SpecialPrint::PrintColorScreen(bool header) 
 {
@@ -1025,13 +1027,14 @@ void SpecialPrint::PrintColorScreen(bool header)
 	{
 		PrintSnakeHeader(); 
 	}
+	SetColor(false, GG); 
 	PrintMultiChars("BLACK/WHT", 11,2); 
 	PrintMultiChars("BLUE/BLUE", 11+6,2); 
 	PrintMultiChars("RED/WHITE", 11+12,2); 
 	PrintMultiChars("RED/CYAN", 11+18,2); 
 	PrintMultiChars("BLUE/RED", 11+24,2); 
 	PrintMultiChars("CUSTOM", 11+30,2); 
-	SetColor(false, GBL); 
+	SetColor(false, GG); 
 }
 void SpecialPrint::PrintSizeScreen(bool header)
 {
@@ -1039,7 +1042,7 @@ void SpecialPrint::PrintSizeScreen(bool header)
 	{
 		PrintSnakeHeader(); 
 	}
-	SetColor(true,GBL); 
+	SetColor(true,GG); 
 	PrintMultiChars("SMALL", 11,2); 
 	PrintMultiChars("MEDIUM", 11+6,2); 
 	PrintMultiChars("LARGE", 11+12,2);

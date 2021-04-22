@@ -996,7 +996,7 @@ class Letters
 				j++; 
 				
 			}
-
+			delete[] parsed;
 		}
 };
 
